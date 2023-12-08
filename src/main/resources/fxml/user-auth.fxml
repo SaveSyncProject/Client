@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="455.0" prefWidth="578.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.umontpellier.controller.UserController">
+    <children>
+        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="455.0" prefWidth="578.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+            <children>
+                <HBox alignment="CENTER_RIGHT" prefHeight="3.0" prefWidth="558.0">
+                    <VBox.margin>
+                        <Insets right="20.0" />
+                    </VBox.margin>
+                </HBox>
+                <Text id="BigText" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Connectez-vous" textAlignment="CENTER" wrappingWidth="178.7294921875">
+                    <font>
+                        <Font size="22.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="10.0" top="22.0" />
+                    </VBox.margin>
+                </Text>
+                <Text id="texte" strokeType="OUTSIDE" strokeWidth="0.0" text="Connectez-vous pour accéder à votre espace de vote">
+                    <VBox.margin>
+                        <Insets bottom="40.0" />
+                    </VBox.margin>
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Text>
+                <HBox alignment="CENTER" prefHeight="240.0" prefWidth="578.0">
+                    <children>
+                        <VBox prefHeight="240.0" prefWidth="348.0">
+                            <children>
+                                <Text id="labelTexte" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom d'utilisateur">
+                                    <VBox.margin>
+                                        <Insets bottom="10.0" />
+                                    </VBox.margin>
+                                </Text>
+                                <TextField fx:id="username">
+                                    <VBox.margin>
+                                        <Insets bottom="30.0" />
+                                    </VBox.margin>
+                                    <cursor>
+                                        <Cursor fx:constant="TEXT" />
+                                    </cursor>
+                                </TextField>
+                                <Text id="labelTexte" strokeType="OUTSIDE" strokeWidth="0.0" text="Mot de passe">
+                                    <VBox.margin>
+                                        <Insets bottom="10.0" />
+                                    </VBox.margin>
+                                </Text>
+                                <PasswordField fx:id="password">
+                                    <VBox.margin>
+                                        <Insets bottom="10.0" />
+                                    </VBox.margin>
+                                </PasswordField>
+                                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                    <children>
+                                        <ImageView fx:id="imageAttention" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" style="-fx-opacity: 0;">
+                                            <HBox.margin>
+                                                <Insets right="5.0" />
+                                            </HBox.margin>
+                                            <image>
+                                                <Image url="@../image/error.png" />
+                                            </image>
+                                        </ImageView>
+                                        <Text id="messageErreur" fx:id="textInfo" strokeType="OUTSIDE" strokeWidth="0.0" />
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER" prefHeight="32.0" prefWidth="578.0">
+                                    <children>
+                                        <Text id="messageErreur" fx:id="messageEssais" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre d'essai(s) restant(s) :" visible="false">
+                                            <HBox.margin>
+                                                <Insets />
+                                            </HBox.margin>
+                                        </Text>
+                                        <Text id="messageErreur" fx:id="compteurEssaie" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" />
+                                    </children>
+                                    <VBox.margin>
+                                        <Insets bottom="10.0" />
+                                    </VBox.margin>
+                                </HBox>
+                                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                    <children>
+                                        <Button mnemonicParsing="false" onAction="#login" prefHeight="29.0" prefWidth="189.0" text="Connexion">
+                                            <font>
+                                                <Font size="15.0" />
+                                            </font>
+                                            <HBox.margin>
+                                                <Insets bottom="20.0" />
+                                            </HBox.margin>
+                                            <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                            </cursor>
+                                        </Button>
+                                    </children>
+                                </HBox>
+                            </children>
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                        </VBox>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="20.0" />
+                    </VBox.margin>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+    <!--
+    <stylesheets>
+        <URL value="@../css/style.css" />
+    </stylesheets>
+    -->
+</AnchorPane>
