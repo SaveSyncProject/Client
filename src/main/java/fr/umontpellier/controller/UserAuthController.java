@@ -5,12 +5,20 @@ import com.unboundid.ldap.sdk.LDAPException;
 import fr.umontpellier.view.SaveManagerView;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class UserAuthController {
 
     @FXML
     public TextField username, password;
+
+    @FXML
+    public Text textInfo;
+
+    @FXML
+    public ImageView imageAttention;
 
     private Stage stage;
 
@@ -27,7 +35,9 @@ public class UserAuthController {
             new SaveManagerView();
             stage.close();
         } else {
-            System.out.println("Échec de la connexion.");
+            textInfo.setText("Échec de la connexion");
+            textInfo.setVisible(true);
+            imageAttention.setStyle("-fx-opacity: 1");
         }
 
     }

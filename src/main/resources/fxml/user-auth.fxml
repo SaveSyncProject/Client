@@ -47,7 +47,7 @@
                                         <Insets bottom="10.0" />
                                     </VBox.margin>
                                 </Text>
-                                <TextField fx:id="username">
+                                <TextField fx:id="username" prefWidth="204.0">
                                     <VBox.margin>
                                         <Insets bottom="30.0" />
                                     </VBox.margin>
