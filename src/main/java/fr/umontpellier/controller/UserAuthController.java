@@ -2,15 +2,12 @@ package fr.umontpellier.controller;
 
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
+import fr.umontpellier.view.SaveManagerView;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class UserController {
-
-    public UserController() {
-        System.out.println("UserController");
-    }
+public class UserAuthController {
 
     @FXML
     public TextField username, password;
@@ -27,6 +24,7 @@ public class UserController {
 
         if (authenticateWithLDAP(username, password)) {
             System.out.println("Connexion réussie!");
+            new SaveManagerView();
             stage.close();
         } else {
             System.out.println("Échec de la connexion.");

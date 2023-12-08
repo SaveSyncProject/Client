@@ -1,23 +1,23 @@
 package fr.umontpellier.view;
 
-import fr.umontpellier.controller.UserAuthController;
+import fr.umontpellier.controller.SaveManagerController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class UserAuthView extends Stage {
+public class SaveManagerView extends Stage {
 
-    public UserAuthView(){
+    public SaveManagerView() {
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/user-auth.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/save-manager.fxml"));
             Scene scene = new Scene(loader.load());
             scene.getStylesheets().add(getClass().getResource("/css/material-style.css").toExternalForm());
             this.resizableProperty().setValue(Boolean.FALSE);
-            UserAuthController controller = loader.getController();
+            SaveManagerController controller = loader.getController();
             controller.setStage(this);
-            this.setTitle("Authentification");
+            this.setTitle("SaveSync");
             this.setScene(scene);
             this.sizeToScene();
             this.show();
@@ -27,6 +27,4 @@ public class UserAuthView extends Stage {
         }
     }
 
-
 }
-
