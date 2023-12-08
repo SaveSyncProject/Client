@@ -10,7 +10,7 @@ Ce module est la partie cliente de l'application de sauvegarde externalisée. D�
 ## Installation
 1. Cloner le dépôt Git
 ```
-git clone https://github.com/SaveSync-App/Server.git
+git clone https://github.com/SaveSync-App/Client.git
 ```
 
 2. Configurer JavaFX
