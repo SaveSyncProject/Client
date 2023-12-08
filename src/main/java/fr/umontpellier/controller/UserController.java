@@ -1,5 +1,7 @@
 package fr.umontpellier.controller;
 
+import com.unboundid.ldap.sdk.LDAPConnection;
+import com.unboundid.ldap.sdk.LDAPException;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -22,9 +24,26 @@ public class UserController {
     public void login() {
         String username = this.username.getText();
         String password = this.password.getText();
-        System.out.println("Username: " + username);
-        System.out.println("Password: " + password);
-        stage.close();
+
+        if (authenticateWithLDAP(username, password)) {
+            System.out.println("Connexion réussie!");
+            stage.close();
+        } else {
+            System.out.println("Échec de la connexion.");
+        }
+
+    }
+
+    private boolean authenticateWithLDAP(String username, String password) {
+        try {
+            LDAPConnection connection = new LDAPConnection("localhost", 389);
+            connection.bind("uid=" + username + ",ou=users,dc=example,dc=org", password);
+            connection.close();
+            return true;
+        } catch (LDAPException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

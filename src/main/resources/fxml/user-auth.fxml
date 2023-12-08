@@ -78,19 +78,6 @@
                                         <Text id="messageErreur" fx:id="textInfo" strokeType="OUTSIDE" strokeWidth="0.0" />
                                     </children>
                                 </HBox>
-                                <HBox alignment="CENTER" prefHeight="32.0" prefWidth="578.0">
-                                    <children>
-                                        <Text id="messageErreur" fx:id="messageEssais" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre d'essai(s) restant(s) :" visible="false">
-                                            <HBox.margin>
-                                                <Insets />
-                                            </HBox.margin>
-                                        </Text>
-                                        <Text id="messageErreur" fx:id="compteurEssaie" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" />
-                                    </children>
-                                    <VBox.margin>
-                                        <Insets bottom="10.0" />
-                                    </VBox.margin>
-                                </HBox>
                                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                                     <children>
                                         <Button mnemonicParsing="false" onAction="#login" prefHeight="29.0" prefWidth="189.0" text="Connexion">

@@ -4,6 +4,7 @@ module fr.umontpellier.client {
     requires javafx.graphics;
     requires javafx.base;
     requires java.desktop;
+    requires unboundid.ldapsdk;
 
     exports fr.umontpellier.model;
     opens fr.umontpellier.model;
