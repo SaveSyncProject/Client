@@ -14,4 +14,5 @@ git clone https://github.com/SaveSync-App/Server.git
 ```
 
 2. Configurer JavaFX
+
 Assurez-vous que le SDK JavaFX est installé et correctement configuré dans votre IDE ou environnement de développement.
