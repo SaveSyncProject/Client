@@ -2,25 +2,41 @@ package fr.umontpellier.controller;
 
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
-import fr.umontpellier.view.SaveManagerView;
+import fr.umontpellier.model.User;
+import fr.umontpellier.view.FileBackupView;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
+import java.io.*;
+import java.net.URL;
+import java.security.KeyStore;
+import java.security.cert.CertificateException;
+import java.security.NoSuchAlgorithmException;
+import java.security.KeyStoreException;
+import java.security.KeyManagementException;
+
 public class UserAuthController {
 
     @FXML
-    public TextField username, password;
+    private TextField username, password, host;
 
     @FXML
-    public Text textInfo;
+    private Text textInfo;
 
     @FXML
-    public ImageView imageAttention;
+    private ImageView imageAttention;
 
     private Stage stage;
+
+    private ObjectOutputStream out;
+    private BufferedReader in;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -29,29 +45,50 @@ public class UserAuthController {
     public void login() {
         String username = this.username.getText();
         String password = this.password.getText();
+        String host = this.host.getText();
+        int port = 1234;
 
-        if (authenticateWithLDAP(username, password)) {
-            System.out.println("Connexion réussie!");
-            new SaveManagerView();
-            stage.close();
-        } else {
-            textInfo.setText("Échec de la connexion");
-            textInfo.setVisible(true);
-            imageAttention.setStyle("-fx-opacity: 1");
-        }
-
-    }
-
-    private boolean authenticateWithLDAP(String username, String password) {
         try {
-            LDAPConnection connection = new LDAPConnection("localhost", 389);
-            connection.bind("uid=" + username + ",ou=users,dc=example,dc=org", password);
-            connection.close();
-            return true;
-        } catch (LDAPException e) {
+            SSLSocket sslSocket = createSSLSocket(host, port);
+            out = new ObjectOutputStream(sslSocket.getOutputStream());
+            in = new BufferedReader(new InputStreamReader(sslSocket.getInputStream()));
+
+            out.writeObject(new User(username, password));
+
+            String response = in.readLine();
+            if ("OK".equals(response)) {
+                stage.close();
+                FileBackupView fileBackupView = new FileBackupView(sslSocket, in, out);
+                fileBackupView.show();
+            } else {
+                textInfo.setText("Identifiants incorrects");
+                imageAttention.setVisible(true);
+                sslSocket.close(); // Fermer la socket si l'authentification échoue
+            }
+        } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            textInfo.setText("Erreur lors de l'établissement de la connexion SSL.");
+            imageAttention.setVisible(true);
         }
     }
 
+    private SSLSocket createSSLSocket(String host, int port) throws IOException, NoSuchAlgorithmException, KeyStoreException, CertificateException, KeyManagementException, FileNotFoundException {
+        URL truststoreResource = getClass().getResource("/ssl/myClientKeystore.jks");
+        if (truststoreResource == null) {
+            throw new FileNotFoundException("Le fichier 'myClientKeystore.jks' est introuvable.");
+        }
+
+        String truststorePassword = "miaoumiaou";
+        KeyStore ts = KeyStore.getInstance("JKS");
+        ts.load(truststoreResource.openStream(), truststorePassword.toCharArray());
+
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+        tmf.init(ts);
+
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, tmf.getTrustManagers(), null);
+
+        SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+        return (SSLSocket) sslSocketFactory.createSocket(host, port);
+    }
 }

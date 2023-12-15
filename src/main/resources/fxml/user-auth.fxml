@@ -17,11 +17,6 @@
     <children>
         <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="455.0" prefWidth="578.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
             <children>
-                <HBox alignment="CENTER_RIGHT" prefHeight="3.0" prefWidth="558.0">
-                    <VBox.margin>
-                        <Insets right="20.0" />
-                    </VBox.margin>
-                </HBox>
                 <Text id="BigText" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Connectez-vous" textAlignment="CENTER" wrappingWidth="178.7294921875">
                     <font>
                         <Font size="22.0" />
@@ -42,6 +37,19 @@
                     <children>
                         <VBox prefHeight="240.0" prefWidth="348.0">
                             <children>
+                        <Text id="labelTexte" strokeType="OUTSIDE" strokeWidth="0.0" text="Hôte">
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </Text>
+                        <TextField fx:id="host" prefWidth="204.0">
+                           <VBox.margin>
+                              <Insets bottom="30.0" />
+                           </VBox.margin>
+                           <cursor>
+                              <Cursor fx:constant="TEXT" />
+                           </cursor>
+                        </TextField>
                                 <Text id="labelTexte" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom d'utilisateur">
                                     <VBox.margin>
                                         <Insets bottom="10.0" />
@@ -65,7 +73,7 @@
                                         <Insets bottom="10.0" />
                                     </VBox.margin>
                                 </PasswordField>
-                                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                     <children>
                                         <ImageView fx:id="imageAttention" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" style="-fx-opacity: 0;">
                                             <HBox.margin>
@@ -75,7 +83,7 @@
                                                 <Image url="@../image/error.png" />
                                             </image>
                                         </ImageView>
-                                        <Text id="messageErreur" fx:id="textInfo" strokeType="OUTSIDE" strokeWidth="0.0" />
+                                        <Text id="messageErreur" fx:id="textInfo" fill="#d10000" strokeType="OUTSIDE" strokeWidth="0.0" />
                                     </children>
                                 </HBox>
                                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">

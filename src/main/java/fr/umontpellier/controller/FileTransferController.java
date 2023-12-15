@@ -6,9 +6,12 @@ import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 
-public class SaveManagerController {
+public class FileTransferController {
 
     @FXML
     Button browseButton;
@@ -17,6 +20,10 @@ public class SaveManagerController {
     TextField folderPath;
 
     private Stage stage;
+    private Socket socket;
+
+    private ObjectOutputStream out;
+    private BufferedReader in;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -34,5 +41,8 @@ public class SaveManagerController {
             folderPath.setText(selectedDirectory.getAbsolutePath());
         }
     }
-    
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
 }

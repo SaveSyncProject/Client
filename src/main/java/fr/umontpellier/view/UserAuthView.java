@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.Socket;
 
 public class UserAuthView extends Stage {
 
@@ -16,8 +17,7 @@ public class UserAuthView extends Stage {
             scene.getStylesheets().add(getClass().getResource("/css/material-style.css").toExternalForm());
             this.resizableProperty().setValue(Boolean.FALSE);
             UserAuthController controller = loader.getController();
-            controller.setStage(this);
-            this.setTitle("Authentification");
+            controller.setStage(this);this.setTitle("Authentification");
             this.setScene(scene);
             this.sizeToScene();
             this.show();
