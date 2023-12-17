@@ -1,13 +1,13 @@
-package fr.umontpellier.model;
+package model;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class Backup implements Serializable {
+public class BackupDetails implements Serializable {
     private String directoryPath;
     private List<String> fileExtensions;
 
-    public Backup(String directoryPath, List<String> fileExtensions) {
+    public BackupDetails(String directoryPath, List<String> fileExtensions) {
         this.directoryPath = directoryPath;
         this.fileExtensions = fileExtensions;
     }

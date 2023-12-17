@@ -1,18 +1,41 @@
-# SaveSync - Client
+# ClientSSL
+Ceci est un dépôt qui contient un client pour se connecter au serveur EN SSL
 
-## Description
-Ce module est la partie cliente de l'application de sauvegarde externalisée. Développée avec JavaFX, cette interface utilisateur permet aux utilisateurs de sélectionner les dossiers à sauvegarder, de configurer les paramètres de connexion au serveur de sauvegarde, et d'initier le processus de sauvegarde.
+## Informations générales du projet
 
-## Prérequis
-- JDK 21 ou supérieur
-- JavaFX SDK 17 ou supérieur
+- Application Java avec le JDK OpenJDK 21.0.1
+- Projet Maven
+- Utilisation de socket SSL
 
-## Installation
-1. Cloner le dépôt Git
-```
-git clone https://github.com/SaveSync-App/Client.git
-```
+## Explication de ce dépôt
 
-2. Configurer JavaFX
+Ce dépôt contient un client qui permet de se connecter au serveur en SSL.
 
-Assurez-vous que le SDK JavaFX est installé et correctement configuré dans votre IDE ou environnement de développement.
+## Comment utiliser ce client
+
+Dans un premier temps, il faut que le serveur soit lancé.
+
+Le serveur se trouve dans le dépôt suivant :
+
+![ Texte alternatif](/imgREADME/dépôt.png "Titre de l'image") 
+
+**WARNING** : Il faut que tu sois sur la branche "**SSL-Server-V1**" car sur la branche main,
+il se peut que j'ai fait des modifications qui ne sont pas encore fonctionnelles.
+
+Ensuite, il faut que tu lances le serveur.
+
+C'est le fichier "**Main_Server**".
+
+## Notes importantes
+
+Ces fichiers sont cruciaux pour le bon fonctionnement du clientSSL :
+
+Quand tu vas essayer de faire fonctionner ton clientSSL, tu devras mettre ces fichiers obligatoirement dans ton dossier de travail.
+
+
+![captureFichiersSSLClient.png](imgREADME%2FcaptureFichiersSSLClient.png)
+
+
+
+Il faut également que la classe User ait absolument le même nom de package que la classe User du serveur.
+_Ca sera la package "model"_.
