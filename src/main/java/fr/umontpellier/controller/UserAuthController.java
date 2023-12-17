@@ -36,7 +36,7 @@ public class UserAuthController {
     private Stage stage;
 
     private ObjectOutputStream out;
-    private BufferedReader in;
+    private ObjectInputStream in;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -51,19 +51,18 @@ public class UserAuthController {
         try {
             SSLSocket sslSocket = createSSLSocket(host, port);
             out = new ObjectOutputStream(sslSocket.getOutputStream());
-            in = new BufferedReader(new InputStreamReader(sslSocket.getInputStream()));
+            in = new ObjectInputStream(sslSocket.getInputStream());
 
             out.writeObject(new User(username, password));
 
-            String response = in.readLine();
+            String response = (String) in.readObject();
             if ("OK".equals(response)) {
                 stage.close();
-                FileBackupView fileBackupView = new FileBackupView(sslSocket, in, out);
-                fileBackupView.show();
+                new FileBackupView(sslSocket, in, out).show();
             } else {
                 textInfo.setText("Identifiants incorrects");
                 imageAttention.setVisible(true);
-                sslSocket.close(); // Fermer la socket si l'authentification échoue
+                sslSocket.close(); // Close the socket if authentication fails
             }
         } catch (Exception e) {
             e.printStackTrace();

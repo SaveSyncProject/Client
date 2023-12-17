@@ -5,14 +5,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class FileBackupView extends Stage {
 
-    public FileBackupView(Socket socket, BufferedReader in, ObjectOutputStream out) {
+    public FileBackupView(Socket socket, ObjectInputStream in, ObjectOutputStream out) {
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/backup-manager.fxml"));
             Scene scene = new Scene(loader.load());
