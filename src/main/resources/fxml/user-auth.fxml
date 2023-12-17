@@ -13,69 +13,102 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="455.0" prefWidth="578.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.umontpellier.controller.UserAuthController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="455.0" prefWidth="578.0" stylesheets="@../css/material-style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.umontpellier.controller.UserAuthController">
     <children>
         <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="455.0" prefWidth="578.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
             <children>
-                <Text id="BigText" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Connectez-vous" textAlignment="CENTER" wrappingWidth="178.7294921875">
-                    <font>
-                        <Font size="22.0" />
-                    </font>
-                    <VBox.margin>
-                        <Insets bottom="10.0" top="22.0" />
-                    </VBox.margin>
-                </Text>
-                <Text id="texte" strokeType="OUTSIDE" strokeWidth="0.0" text="Connectez-vous pour accéder à votre espace de vote">
-                    <VBox.margin>
-                        <Insets bottom="40.0" />
-                    </VBox.margin>
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Text>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                      <Text id="BigText" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: green;" styleClass="title" text="Connectez-vous" textAlignment="CENTER" wrappingWidth="178.7294921875">
+                          <font>
+                              <Font size="22.0" />
+                          </font>
+                          <VBox.margin>
+                              <Insets bottom="10.0" top="22.0" />
+                          </VBox.margin>
+                      </Text>
+                      <Text id="texte" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitle" text="Identifiez-vous pour accéder à votre espace">
+                          <VBox.margin>
+                              <Insets bottom="40.0" />
+                          </VBox.margin>
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Text>
+               </children>
+            </VBox>
                 <HBox alignment="CENTER" prefHeight="240.0" prefWidth="578.0">
                     <children>
-                        <VBox prefHeight="240.0" prefWidth="348.0">
+                        <VBox alignment="CENTER" prefHeight="240.0" prefWidth="348.0" spacing="17.0">
                             <children>
-                        <Text id="labelTexte" strokeType="OUTSIDE" strokeWidth="0.0" text="Hôte">
-                           <VBox.margin>
-                              <Insets bottom="10.0" />
-                           </VBox.margin>
-                        </Text>
-                        <TextField fx:id="host" prefWidth="204.0">
-                           <VBox.margin>
-                              <Insets bottom="30.0" />
-                           </VBox.margin>
-                           <cursor>
-                              <Cursor fx:constant="TEXT" />
-                           </cursor>
-                        </TextField>
-                                <Text id="labelTexte" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom d'utilisateur">
-                                    <VBox.margin>
-                                        <Insets bottom="10.0" />
-                                    </VBox.margin>
-                                </Text>
-                                <TextField fx:id="username" prefWidth="204.0">
-                                    <VBox.margin>
-                                        <Insets bottom="30.0" />
-                                    </VBox.margin>
-                                    <cursor>
-                                        <Cursor fx:constant="TEXT" />
-                                    </cursor>
-                                </TextField>
-                                <Text id="labelTexte" strokeType="OUTSIDE" strokeWidth="0.0" text="Mot de passe">
-                                    <VBox.margin>
-                                        <Insets bottom="10.0" />
-                                    </VBox.margin>
-                                </Text>
-                                <PasswordField fx:id="password">
-                                    <VBox.margin>
-                                        <Insets bottom="10.0" />
-                                    </VBox.margin>
-                                </PasswordField>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="Hôte" wrappingWidth="30.2080078125">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" />
+                                 </VBox.margin>
+                              </Text>
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/host.png" />
+                                       </image>
+                                    </ImageView>
+                                    <TextField fx:id="host" prefWidth="204.0" promptText="192.168.1.101">
+                                       <cursor>
+                                          <Cursor fx:constant="TEXT" />
+                                       </cursor>
+                                    </TextField>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="Nom d'utilisateur">
+                                          <VBox.margin>
+                                              <Insets bottom="10.0" />
+                                          </VBox.margin>
+                                      </Text>
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/user.png" />
+                                       </image>
+                                    </ImageView>
+                                            <TextField fx:id="username" prefWidth="204.0">
+                                                <cursor>
+                                                    <Cursor fx:constant="TEXT" />
+                                                </cursor>
+                                            </TextField>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="Mot de passe">
+                                          <VBox.margin>
+                                              <Insets bottom="10.0" />
+                                          </VBox.margin>
+                                      </Text>
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/lock.png" />
+                                       </image>
+                                    </ImageView>
+                                            <PasswordField fx:id="password" prefHeight="26.0" prefWidth="203.0" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
                                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                     <children>
-                                        <ImageView fx:id="imageAttention" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" style="-fx-opacity: 0;">
+                                        <ImageView fx:id="imageAttention" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" style="-fx-opacity: 100;" visible="false">
                                             <HBox.margin>
                                                 <Insets right="5.0" />
                                             </HBox.margin>
@@ -83,7 +116,7 @@
                                                 <Image url="@../image/error.png" />
                                             </image>
                                         </ImageView>
-                                        <Text id="messageErreur" fx:id="textInfo" fill="#d10000" strokeType="OUTSIDE" strokeWidth="0.0" />
+                                        <Text id="messageErreur" fx:id="textInfo" fill="#d10000" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" />
                                     </children>
                                 </HBox>
                                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">

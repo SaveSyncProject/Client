@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<TabPane fx:id="tabPane" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.umontpellier.controller.FileTransferController">
+    <tabs>
+        <Tab fx:id="export" closable="false" text="Export" >
+            <fx:include source="export.fxml"/>
+        </Tab>
+        <Tab fx:id="import" closable="false" text="Import">
+            <fx:include source="import.fxml"/>
+        </Tab>
+    </tabs>
+</TabPane>

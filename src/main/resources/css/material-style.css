@@ -4,11 +4,6 @@
     -fx-background: #eeeeee;
 }
 
-.label {
-    -fx-font-size: 14px;
-    -fx-text-fill: #333333;
-}
-
 .button {
     -fx-background-color: #507DBC;
     -fx-text-fill: white;
@@ -47,8 +42,6 @@
     -fx-scale-y: 1.05;
 }
 
-
-
 .text-field {
     -fx-pref-width: 200px;
     -fx-pref-height: 30px;
@@ -61,4 +54,21 @@
     -fx-border-color: #608FCF;
 }
 
-/* Ajoutez d'autres styles spécifiques à vos composants ici */
+.label {
+    -fx-pref-width: 200px;
+    -fx-pref-height: 30px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.subtitle {
+    -fx-pref-width: 200px;
+    -fx-pref-height: 30px;
+    -fx-font-size: 18px;
+    -fx-text-fill: #333333;
+}
+
+.title {
+    -fx-font-size: 24px;
+    -fx-text-fill: #019c01;
+}

@@ -1,4 +1,4 @@
-package fr.umontpellier.client;
+package fr.umontpellier;
 
 import fr.umontpellier.view.UserAuthView;
 import javafx.application.Application;

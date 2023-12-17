@@ -14,13 +14,15 @@ public class FileBackupView extends Stage {
 
     public FileBackupView(Socket socket, BufferedReader in, ObjectOutputStream out) {
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/save-manager.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/backup-manager.fxml"));
             Scene scene = new Scene(loader.load());
             scene.getStylesheets().add(getClass().getResource("/css/material-style.css").toExternalForm());
             this.resizableProperty().setValue(Boolean.FALSE);
             FileTransferController controller = loader.getController();
             controller.setStage(this);
             controller.setSocket(socket);
+            controller.setIn(in);
+            controller.setOut(out);
             this.setTitle("SaveSync");
             this.setScene(scene);
             this.sizeToScene();

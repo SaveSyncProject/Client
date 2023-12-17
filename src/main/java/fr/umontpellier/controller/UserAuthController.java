@@ -67,7 +67,7 @@ public class UserAuthController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            textInfo.setText("Erreur lors de l'établissement de la connexion SSL.");
+            textInfo.setText("Erreur lors de la connexion au serveur.");
             imageAttention.setVisible(true);
         }
     }
