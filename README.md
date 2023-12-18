@@ -21,6 +21,7 @@ Assurez-vous que le SDK JavaFX est installé et correctement configuré dans vot
 
 Cette application permet à l'utilisateur de sauvegarder ses fichiers sur un serveur distant. 
 Elle permet également de récupérer les sauvegardes effectuées.
+
 ![SaveSync.png](src%2Fmain%2Fresources%2Fimage%2Fdoc%2FSaveSync.png)
 
 ### Connexion au serveur
