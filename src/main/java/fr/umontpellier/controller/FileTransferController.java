@@ -35,6 +35,7 @@ public class FileTransferController {
 
     public void onExport() {
         try {
+            out.writeObject("SAVE_REQUEST");
             List<String> extensions = Arrays.asList(this.extensionField.getText().split(" "));
             Backup backup = new Backup(folderPathField.getText(), extensions);
             out.writeObject(backup);
@@ -73,7 +74,7 @@ public class FileTransferController {
                 if (response instanceof String) {
                     String relativeFilePath = (String) response;
                     if ("RESTORE_COMPLETE".equals(relativeFilePath)) {
-                        break; // Fin de la restauration
+                        break;
                     }
 
                     File file = new File(restoreDirectory, relativeFilePath);
