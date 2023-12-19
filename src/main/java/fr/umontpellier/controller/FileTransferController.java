@@ -2,17 +2,19 @@ package fr.umontpellier.controller;
 
 import fr.umontpellier.model.Backup;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -20,6 +22,8 @@ public class FileTransferController {
 
     @FXML
     Button exportBrowseButton, exportButton, importButton, importBrowseButton;
+    @FXML
+    Button viewFilesButton, restoreFilesButton, deleteFilesButton;
 
     @FXML
     TextField folderPathField, extensionField, destinationPathField;
@@ -27,7 +31,7 @@ public class FileTransferController {
     @FXML
     private ListView<String> backupListView;
     @FXML
-    private Button refreshButton, deleteButton;
+    private ListView<String> filesListView;
 
     private Stage stage;
     private Socket socket;
@@ -39,8 +43,19 @@ public class FileTransferController {
         this.stage = stage;
     }
 
+    @FXML
+    public void initialize() {
+        // Configurez la ListView pour autoriser la sélection multiple
+        filesListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        backupListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    }
+
+    /*
+     * Méthode pour exporter un dossier entier au serveur
+     */
     public void onExport() {
         try {
+            out.writeObject("SAVE_REQUEST");
             List<String> extensions = Arrays.asList(this.extensionField.getText().split(" "));
             Backup backup = new Backup(folderPathField.getText(), extensions);
             out.writeObject(backup);
@@ -57,7 +72,7 @@ public class FileTransferController {
         }
         try {
             // Envoyer une demande de restauration au serveur
-            out.writeObject("RESTORE_REQUEST");
+            out.writeObject("RESTORE_ALL_REQUEST");
             out.flush();
 
             // Attendre et traiter la réponse du serveur
@@ -190,24 +205,134 @@ public class FileTransferController {
 
 
     @FXML
-    private void onRefresh() {
+    private void onRefreshBackups() {
         try {
-            out.writeObject("LIST_BACKUPS_REQUEST");
-            out.flush();
+            if (out != null) {
+                out.writeObject("LIST_BACKUPS_REQUEST");
+                out.flush();
 
-            Object response = in.readObject();
-            if (response instanceof List) {
-                List<String> backups = (List<String>) response;
-                backupListView.getItems().setAll(backups);
+                Object response = in.readObject();
+                if (response instanceof List) {
+                    List<String> backups = (List<String>) response;
+                    backupListView.getItems().setAll(backups);
+                }
+            } else {
+                showErrorPopup("Erreur de connexion", "La connexion au serveur n'est pas établie.");
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-            // Gérer l'erreur
+            showErrorPopup("Erreur", "Impossible de rafraîchir la liste des sauvegardes.");
+        }
+    }
+
+
+
+    // Méthode pour afficher les fichiers dans une sauvegarde sélectionnée
+    @FXML
+    private void onViewFiles() {
+        String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
+        if (selectedBackup != null) {
+            try {
+                out.writeObject("LIST_FILES_REQUEST");
+                out.writeObject(selectedBackup);
+                out.flush();
+
+                Object response = in.readObject();
+                if (response instanceof List) {
+                    List<String> files = (List<String>) response;
+                    filesListView.getItems().setAll(files);
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+                showErrorPopup("Erreur", "Impossible d'obtenir la liste des fichiers.");
+            }
+        } else {
+            showErrorPopup("Sélection manquante", "Veuillez sélectionner une sauvegarde pour afficher ses fichiers.");
+        }
+    }
+
+
+    // Méthode pour restaurer les fichiers sélectionnés
+    @FXML
+    private void onPartialRestoreFiles() {
+        List<String> selectedFiles = new ArrayList<>(filesListView.getSelectionModel().getSelectedItems());
+        if (!selectedFiles.isEmpty()) {
+            try {
+                // On récupère la backup sélectionnée
+                String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
+
+                List<String> filesWithBackupPath = selectedFiles.stream()
+                        .map(file -> Paths.get(selectedBackup, file).toString())
+                        .collect(Collectors.toList());
+
+                out.writeObject("RESTORE_PARTIAL_REQUEST");
+                out.writeObject(filesWithBackupPath);
+                out.flush();
+
+                // Dossier de destination pour la restauration
+                String userHome = System.getProperty("user.home");
+                Path destinationDirectory = Paths.get(userHome, "Documents", "RestoredFiles");
+
+                Object response;
+                while ((response = in.readObject()) != null) {
+                    if (response.equals("RESTORE_COMPLETE")) {
+                        break;
+                    }
+
+                    Path destFile = destinationDirectory.resolve((String) response);
+                    Files.createDirectories(destFile.getParent());
+                    try (OutputStream fileOut = Files.newOutputStream(destFile)) {
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = in.read(buffer)) != -1) {
+                            fileOut.write(buffer, 0, bytesRead);
+                        }
+                    }
+                }
+                showBackupSuccessPopup("Restauration Réussie", "Les fichiers sélectionnés ont été restaurés.");
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+                showErrorPopup("Erreur de Restauration", "Une erreur est survenue lors de la tentative de restauration des fichiers.");
+            }
+        } else {
+            showErrorPopup("Sélection requise", "Veuillez sélectionner des fichiers à restaurer.");
+        }
+    }
+
+
+    // Méthode pour supprimer les fichiers sélectionnés
+    @FXML
+    private void onDeleteFiles() {
+        List<String> selectedFiles = filesListView.getSelectionModel().getSelectedItems();
+        if (!selectedFiles.isEmpty()) {
+            try {
+                // Préfixez chaque fichier avec le nom du dossier de sauvegarde avant de l'envoyer
+                String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
+
+                List<String> fullPaths = selectedFiles.stream()
+                        .map(fileName -> selectedBackup + "/" + fileName)
+                        .collect(Collectors.toList());
+
+                out.writeObject("DELETE_FILES_REQUEST");
+                out.writeObject(fullPaths);
+                out.flush();
+
+
+                String response = (String) in.readObject();
+                if ("SUCCESS".equals(response)) {
+                    showBackupSuccessPopup("Suppression Réussie", "Les fichiers sélectionnés ont été supprimés.");
+                } else {
+                    showErrorPopup("Erreur de Suppression", "Certains fichiers n'ont pas pu être supprimés.");
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+                showErrorPopup("Erreur de Suppression", "Une erreur est survenue lors de la suppression des fichiers.");
+            }
         }
     }
 
     @FXML
-    private void onDelete() {
+    private void onDeleteBackup() {
         String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
         if (selectedBackup != null) {
             try {
@@ -215,13 +340,26 @@ public class FileTransferController {
                 out.writeObject(selectedBackup);
                 out.flush();
 
-                // Gérer la réponse du serveur après la suppression
-                onRefresh(); // Actualiser la liste
-            } catch (IOException e) {
+                String response = (String) in.readObject();
+                if ("SUCCESS".equals(response)) {
+                    showBackupSuccessPopup("Suppression Réussie", "La sauvegarde a été supprimée.");
+                    // Rafraîchir la liste des sauvegardes ici, si nécessaire
+                } else {
+                    showErrorPopup("Erreur de Suppression", "La sauvegarde n'a pas pu être supprimée.");
+                }
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-                // Gérer l'erreur
+                showErrorPopup("Erreur de Suppression", "Une erreur est survenue lors de la suppression de la sauvegarde.");
             }
+        } else {
+            showErrorPopup("Sélection requise", "Veuillez sélectionner un backup à supprimer.");
         }
     }
+
+
+
+
+
+
 
 }
