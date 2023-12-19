@@ -10,81 +10,117 @@
 <?import javafx.scene.text.Font?>
 
 
-<TabPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.umontpellier.controller.FileTransferController">
-   <tabs>
-      <Tab closable="false" text="Export">
-         <content>
-            <VBox fx:id="backupExport" prefHeight="400.0" prefWidth="640.0">
-              <children>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                      <AnchorPane layoutY="14.0" maxHeight="-1.0" maxWidth="-1.0" prefHeight="290.0" prefWidth="362.0">
-                           <children>
-                              <VBox layoutX="26.0" layoutY="14.0" prefHeight="200.0" prefWidth="310.0" spacing="30.0">
-                                 <children>
-                                    <VBox prefHeight="75.0" prefWidth="274.0" spacing="5.0">
-                                       <children>
-                                          <Label text="Dossier à sauvegarder">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
-                                          </Label>
-                                          <TextField fx:id="folderPathField" editable="false" prefHeight="26.0" prefWidth="166.0" />
-                                          <Button fx:id="exportBrowseButton" mnemonicParsing="false" onAction="#onExportSelectFolder" prefHeight="26.0" prefWidth="136.0" styleClass="button, button-small" text="Parcourir..." />
-                                       </children>
-                                    </VBox>
-                                    <VBox prefHeight="75.0" prefWidth="274.0" spacing="5.0">
-                                       <children>
-                                          <Label text="Filtre (extensions)">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
-                                          </Label>
-                                          <TextField fx:id="extensionField" prefHeight="26.0" prefWidth="166.0" promptText="txt,csv,jpg" />
-                                       </children>
-                                    </VBox>
-                                    <Button fx:id="exportButton" mnemonicParsing="false" onAction="#onExport" text="Démarrer la sauvegarde" />
-                                 </children>
-                              </VBox>
-                           </children>
-                      </AnchorPane>
-                     </children>
-                  </AnchorPane>
-              </children>
-            </VBox>
-         </content>
-      </Tab>
-      <Tab closable="false" text="Import">
-         <content>
-            <VBox fx:id="backupExport1" prefHeight="400.0" prefWidth="640.0">
-               <children>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <AnchorPane layoutY="14.0" maxHeight="-1.0" maxWidth="-1.0" prefHeight="290.0" prefWidth="362.0">
-                           <children>
-                              <VBox layoutX="26.0" layoutY="14.0" prefHeight="200.0" prefWidth="310.0" spacing="30.0">
-                                 <children>
-                                    <VBox prefHeight="75.0" prefWidth="274.0" spacing="5.0">
-                                       <children>
-                                          <Label text="Dossier de destination">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
-                                          </Label>
-                                          <TextField fx:id="destinationPathField" editable="false" prefHeight="26.0" prefWidth="166.0" />
-                                          <Button fx:id="importBrowseButton" mnemonicParsing="false" onAction="#onImportSelectFolder" prefHeight="26.0" prefWidth="136.0" styleClass="button, button-small" text="Parcourir..." />
-                                       </children>
-                                    </VBox>
-                                    <Button fx:id="importButton" mnemonicParsing="false" onAction="#onImport" text="Démarrer la récupération" />
-                                 </children>
-                              </VBox>
-                           </children>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.HBox?>
+<TabPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+         fx:controller="fr.umontpellier.controller.FileTransferController">
+    <tabs>
+        <Tab closable="false" text="Export">
+            <content>
+                <VBox fx:id="backupExport" prefHeight="400.0" prefWidth="640.0">
+                    <children>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <AnchorPane layoutY="14.0" maxHeight="-1.0" maxWidth="-1.0" prefHeight="290.0"
+                                            prefWidth="362.0">
+                                    <children>
+                                        <VBox layoutX="26.0" layoutY="14.0" prefHeight="200.0" prefWidth="310.0"
+                                              spacing="30.0">
+                                            <children>
+                                                <VBox prefHeight="75.0" prefWidth="274.0" spacing="5.0">
+                                                    <children>
+                                                        <Label text="Dossier à sauvegarder">
+                                                            <font>
+                                                                <Font size="14.0"/>
+                                                            </font>
+                                                        </Label>
+                                                        <TextField fx:id="folderPathField" editable="false"
+                                                                   prefHeight="26.0" prefWidth="166.0"/>
+                                                        <Button fx:id="exportBrowseButton" mnemonicParsing="false"
+                                                                onAction="#onExportSelectFolder" prefHeight="26.0"
+                                                                prefWidth="136.0" styleClass="button, button-small"
+                                                                text="Parcourir..."/>
+                                                    </children>
+                                                </VBox>
+                                                <VBox prefHeight="75.0" prefWidth="274.0" spacing="5.0">
+                                                    <children>
+                                                        <Label text="Filtre (extensions)">
+                                                            <font>
+                                                                <Font size="14.0"/>
+                                                            </font>
+                                                        </Label>
+                                                        <TextField fx:id="extensionField" prefHeight="26.0"
+                                                                   prefWidth="166.0" promptText="txt,csv,jpg"/>
+                                                    </children>
+                                                </VBox>
+                                                <Button fx:id="exportButton" mnemonicParsing="false"
+                                                        onAction="#onExport" text="Démarrer la sauvegarde"/>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </AnchorPane>
+                            </children>
                         </AnchorPane>
-                     </children>
-                  </AnchorPane>
-               </children>
-            </VBox>
-         </content>
-      </Tab>
-   </tabs>
+                    </children>
+                </VBox>
+            </content>
+        </Tab>
+        <Tab closable="false" text="Import">
+            <content>
+                <VBox fx:id="backupExport1" prefHeight="400.0" prefWidth="640.0">
+                    <children>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <AnchorPane layoutY="14.0" maxHeight="-1.0" maxWidth="-1.0" prefHeight="290.0"
+                                            prefWidth="362.0">
+                                    <children>
+                                        <VBox layoutX="26.0" layoutY="14.0" prefHeight="200.0" prefWidth="310.0"
+                                              spacing="30.0">
+                                            <children>
+                                                <VBox prefHeight="75.0" prefWidth="274.0" spacing="5.0">
+                                                    <children>
+                                                        <Label text="Dossier de destination">
+                                                            <font>
+                                                                <Font size="14.0"/>
+                                                            </font>
+                                                        </Label>
+                                                        <TextField fx:id="destinationPathField" editable="false"
+                                                                   prefHeight="26.0" prefWidth="166.0"/>
+                                                        <Button fx:id="importBrowseButton" mnemonicParsing="false"
+                                                                onAction="#onImportSelectFolder" prefHeight="26.0"
+                                                                prefWidth="136.0" styleClass="button, button-small"
+                                                                text="Parcourir..."/>
+                                                    </children>
+                                                </VBox>
+                                                <Button fx:id="importButton" mnemonicParsing="false"
+                                                        onAction="#onImport" text="Démarrer la récupération"/>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </AnchorPane>
+                    </children>
+                </VBox>
+            </content>
+        </Tab>
+        <Tab text="Gestion des Sauvegardes">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="640.0">
+                    <children>
+                        <VBox layoutX="26.0" layoutY="14.0" prefHeight="400.0" prefWidth="640.0" spacing="30.0">
+                            <children>
+                                <Label text="Sauvegardes Existantes:"/>
+                                <ListView fx:id="backupListView" prefHeight="200.0" prefWidth="600.0"/>
+                                <HBox spacing="10">
+                                    <Button fx:id="refreshButton" text="Rafraîchir" onAction="#onRefresh"/>
+                                    <Button fx:id="deleteButton" text="Supprimer Sauvegarde" onAction="#onDelete"/>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </content>
+        </Tab>
+    </tabs>
 </TabPane>

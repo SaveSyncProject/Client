@@ -4,6 +4,7 @@ import fr.umontpellier.model.Backup;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -22,6 +23,11 @@ public class FileTransferController {
 
     @FXML
     TextField folderPathField, extensionField, destinationPathField;
+
+    @FXML
+    private ListView<String> backupListView;
+    @FXML
+    private Button refreshButton, deleteButton;
 
     private Stage stage;
     private Socket socket;
@@ -181,4 +187,41 @@ public class FileTransferController {
     public void setIn(ObjectInputStream in) {
         this.in = in;
     }
+
+
+    @FXML
+    private void onRefresh() {
+        try {
+            out.writeObject("LIST_BACKUPS_REQUEST");
+            out.flush();
+
+            Object response = in.readObject();
+            if (response instanceof List) {
+                List<String> backups = (List<String>) response;
+                backupListView.getItems().setAll(backups);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            // Gérer l'erreur
+        }
+    }
+
+    @FXML
+    private void onDelete() {
+        String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
+        if (selectedBackup != null) {
+            try {
+                out.writeObject("DELETE_BACKUP_REQUEST");
+                out.writeObject(selectedBackup);
+                out.flush();
+
+                // Gérer la réponse du serveur après la suppression
+                onRefresh(); // Actualiser la liste
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Gérer l'erreur
+            }
+        }
+    }
+
 }
