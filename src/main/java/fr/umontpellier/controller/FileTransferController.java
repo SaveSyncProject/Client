@@ -242,6 +242,10 @@ public class FileTransferController {
                     List<String> files = (List<String>) response;
                     filesListView.getItems().setAll(files);
                 }
+                else{
+
+                    filesListView.getItems().clear();
+                }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
                 showErrorPopup("Erreur", "Impossible d'obtenir la liste des fichiers.");
