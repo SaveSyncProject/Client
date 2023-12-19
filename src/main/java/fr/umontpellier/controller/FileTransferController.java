@@ -35,7 +35,6 @@ public class FileTransferController {
 
     public void onExport() {
         try {
-            out.writeObject("SAVE_REQUEST");
             List<String> extensions = Arrays.asList(this.extensionField.getText().split(" "));
             Backup backup = new Backup(folderPathField.getText(), extensions);
             out.writeObject(backup);
