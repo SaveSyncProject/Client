@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<TabPane prefHeight="526.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.umontpellier.controller.FileTransferController">
+<TabPane prefHeight="526.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.umontpellier.controller.FileTransferController">
     <tabs>
         <Tab closable="false" text="Export">
             <content>
@@ -27,7 +27,7 @@
                                             <children>
                                                 <VBox prefHeight="75.0" prefWidth="274.0" spacing="5.0">
                                                     <children>
-                                                        <Label text="Dossier à sauvegarder">
+                                                        <Label text="Folder to Backup">
                                                             <font>
                                                                 <Font size="14.0" />
                                                             </font>
@@ -38,7 +38,7 @@
                                                 </VBox>
                                                 <VBox prefHeight="75.0" prefWidth="274.0" spacing="5.0">
                                                     <children>
-                                                        <Label text="Filtre (extensions)">
+                                                        <Label text="Filter (extensions)">
                                                             <font>
                                                                 <Font size="14.0" />
                                                             </font>
@@ -46,7 +46,7 @@
                                                         <TextField fx:id="extensionField" prefHeight="26.0" prefWidth="166.0" promptText="txt csv zip" />
                                                     </children>
                                                 </VBox>
-                                                <Button fx:id="exportButton" mnemonicParsing="false" onAction="#onExport" text="Démarrer la sauvegarde" />
+                                                <Button fx:id="exportButton" mnemonicParsing="false" onAction="#onExport" text="Start Backup" />
                                             </children>
                                         </VBox>
                                     </children>
@@ -78,13 +78,13 @@
                                                         <Button fx:id="importBrowseButton" mnemonicParsing="false" onAction="#onImportSelectFolder" prefHeight="26.0" prefWidth="136.0" styleClass="button, button-small" text="Browse..." />
                                                     </children>
                                                 </VBox>
-                                                <Button fx:id="importButton" mnemonicParsing="false" onAction="#onImport" text="Démarrer la récupération" />
+                                                <Button fx:id="importButton" mnemonicParsing="false" onAction="#onImport" text="Start Recovery" />
                                             </children>
                                         </VBox>
                               <Separator orientation="VERTICAL" prefHeight="200.0" />
                               <VBox>
                                  <children>
-                                    <Label text="Sauvegardes existantes">
+                                    <Label text="Existing Backups">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
@@ -107,9 +107,9 @@
                            </padding>
                         </HBox>
                         <Separator prefWidth="200.0" />
-                        <VBox prefHeight="218.0" prefWidth="582.0" spacing="10.0">
+                        <VBox fx:id="fileContainer" prefHeight="218.0" prefWidth="582.0" spacing="10.0">
                            <children>
-                              <Label text="Contenu de la sauvegarde">
+                              <Label text="Backup Content">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -117,8 +117,8 @@
                               <ListView fx:id="filesListView" prefHeight="152.0" prefWidth="575.0" />
                               <HBox spacing="20.0">
                                  <children>
-                                    <Button onAction="#onPartialRestoreFiles" text="Restaurer Fichier(s)" />
-                                    <Button onAction="#onDeleteFiles" prefHeight="26.0" prefWidth="86.0" text="Delete" />
+                                    <Button onAction="#onPartialRestoreFiles" prefHeight="25.0" prefWidth="114.0" text="Restore Files" />
+                                    <Button onAction="#onDeleteFiles" prefHeight="25.0" prefWidth="113.0" text="Delete a File" />
                                     <Button onAction="#onViewFiles" prefHeight="26.0" prefWidth="106.0" text="Refresh" />
                                  </children>
                               </HBox>

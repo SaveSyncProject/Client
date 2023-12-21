@@ -1,7 +1,5 @@
 package fr.umontpellier.controller;
 
-import com.unboundid.ldap.sdk.LDAPConnection;
-import com.unboundid.ldap.sdk.LDAPException;
 import fr.umontpellier.model.User;
 import fr.umontpellier.view.FileBackupView;
 import javafx.fxml.FXML;
@@ -60,13 +58,13 @@ public class UserAuthController {
                 stage.close();
                 new FileBackupView(sslSocket, in, out).show();
             } else {
-                textInfo.setText("Identifiants incorrects");
+                textInfo.setText("Incorrect username or password.");
                 imageAttention.setVisible(true);
-                sslSocket.close(); // Close the socket if authentication fails
+                sslSocket.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            textInfo.setText("Erreur lors de la connexion au serveur.");
+            textInfo.setText("Unable to connect to the server.");
             imageAttention.setVisible(true);
         }
     }
@@ -74,7 +72,7 @@ public class UserAuthController {
     private SSLSocket createSSLSocket(String host, int port) throws IOException, NoSuchAlgorithmException, KeyStoreException, CertificateException, KeyManagementException, FileNotFoundException {
         URL truststoreResource = getClass().getResource("/ssl/myClientKeystore.jks");
         if (truststoreResource == null) {
-            throw new FileNotFoundException("Le fichier 'myClientKeystore.jks' est introuvable.");
+            throw new FileNotFoundException("The 'myClientKeystore.jks' file is not found.");
         }
 
         String truststorePassword = "miaoumiaou";
