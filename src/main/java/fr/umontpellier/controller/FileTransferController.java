@@ -24,10 +24,8 @@ public class FileTransferController {
     Button exportBrowseButton, exportButton, importButton, importBrowseButton;
     @FXML
     Button viewFilesButton, restoreFilesButton, deleteFilesButton;
-
     @FXML
     TextField folderPathField, extensionField, destinationPathField;
-
     @FXML
     private ListView<String> backupListView;
     @FXML
@@ -35,7 +33,6 @@ public class FileTransferController {
 
     private Stage stage;
     private Socket socket;
-
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
@@ -183,14 +180,6 @@ public class FileTransferController {
         }
     }
 
-    public void showBackupSuccessPopup() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Sauvegarde Réussie");
-        alert.setHeaderText(null);
-        alert.setContentText("La sauvegarde des fichiers a été effectuée avec succès.");
-        alert.showAndWait();
-    }
-
     public void setSocket(Socket socket) {
         this.socket = socket;
     }
@@ -224,8 +213,6 @@ public class FileTransferController {
             showErrorPopup("Erreur", "Impossible de rafraîchir la liste des sauvegardes.");
         }
     }
-
-
 
     // Méthode pour afficher les fichiers dans une sauvegarde sélectionnée
     @FXML
@@ -262,7 +249,7 @@ public class FileTransferController {
         List<String> selectedFiles = new ArrayList<>(filesListView.getSelectionModel().getSelectedItems());
         if (!selectedFiles.isEmpty()) {
             try {
-                // On récupère la backup sélectionnée
+                // On récupère la copie sélectionnée
                 String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
 
                 List<String> filesWithBackupPath = selectedFiles.stream()
@@ -359,11 +346,5 @@ public class FileTransferController {
             showErrorPopup("Sélection requise", "Veuillez sélectionner un backup à supprimer.");
         }
     }
-
-
-
-
-
-
 
 }
