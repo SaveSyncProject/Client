@@ -91,30 +91,30 @@ public class FileTransferController {
     }
 
     private void executeFullRestore(String restoreDirectory) throws IOException {
-
         List<String> selectedBackups = new ArrayList<>(backupListView.getSelectionModel().getSelectedItems());
-        if(selectedBackups.isEmpty()){
-            showErrorPopup("Selection Required", "Please select a backup to restore.");
+        if(selectedBackups.isEmpty() || restoreDirectory == null){
+            showErrorPopup("Selection Required", "Please select a backup to restore and a destination folder.");
             return;
         }
 
-        sendRequest("RESTORE_ALL_REQUEST");
+        String selectedBackup = selectedBackups.get(0);
+        sendRequest("RESTORE_ALL_REQUEST", selectedBackup);
         receiveAndRestoreFiles(restoreDirectory);
         showBackupSuccessPopup("Restore Successful", "The files have been successfully restored.");
     }
 
     private void executePartialRestore() throws IOException{
         List<String> selectedFiles = new ArrayList<>(filesListView.getSelectionModel().getSelectedItems());
-        if (!selectedFiles.isEmpty()) {
+        if (!selectedFiles.isEmpty() && destinationPathField.getText() != null) {
             String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
             List<String> filesWithBackupPath = selectedFiles.stream()
                     .map(file -> Paths.get(selectedBackup, file).toString())
                     .collect(Collectors.toList());
             sendRequest("RESTORE_PARTIAL_REQUEST", filesWithBackupPath);
-            receiveAndRestoreSpecificFiles(destinationPathField.getText());
+            receiveAndRestoreFiles(destinationPathField.getText());
             showBackupSuccessPopup("Restore Successful", "The files have been successfully restored.");
         } else {
-            showErrorPopup("Selection Required", "Please select a file to restore.");
+            showErrorPopup("Selection Required", "Please select files to restore and a destination folder.");
         }
         onViewFiles();
     }

@@ -16,6 +16,7 @@ public class FileBackupView extends Stage {
             Scene scene = new Scene(loader.load());
             scene.getStylesheets().add(getClass().getResource("/css/material-style.css").toExternalForm());
             this.resizableProperty().setValue(Boolean.FALSE);
+            this.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/image/icon.png")));
             FileTransferController controller = loader.getController();
             controller.setStage(this);
             controller.setSocket(socket);

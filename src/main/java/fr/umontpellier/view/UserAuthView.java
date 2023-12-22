@@ -16,6 +16,7 @@ public class UserAuthView extends Stage {
             Scene scene = new Scene(loader.load());
             scene.getStylesheets().add(getClass().getResource("/css/material-style.css").toExternalForm());
             this.resizableProperty().setValue(Boolean.FALSE);
+            this.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/image/icon.png")));
             UserAuthController controller = loader.getController();
             controller.setStage(this);this.setTitle("Authentification");
             this.setScene(scene);
