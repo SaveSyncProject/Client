@@ -13,13 +13,13 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="455.0" prefWidth="578.0" stylesheets="@../css/material-style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.umontpellier.controller.UserAuthController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="455.0" prefWidth="578.0" stylesheets="@../css/material-style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.umontpellier.controller.UserAuthController">
     <children>
         <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="455.0" prefWidth="578.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
             <children>
             <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
                <children>
-                      <Text id="BigText" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: green;" styleClass="title" text="Connectez-vous" textAlignment="CENTER" wrappingWidth="178.7294921875">
+                      <Text id="BigText" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: green;" styleClass="title" text="SaveSync" textAlignment="CENTER" wrappingWidth="178.7294921875">
                           <font>
                               <Font size="22.0" />
                           </font>
@@ -27,7 +27,7 @@
                               <Insets bottom="10.0" top="22.0" />
                           </VBox.margin>
                       </Text>
-                      <Text id="texte" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitle" text="Identifiez-vous pour accéder à votre espace">
+                      <Text id="texte" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="subtitle" text="Login to access your space">
                           <VBox.margin>
                               <Insets bottom="40.0" />
                           </VBox.margin>
@@ -43,7 +43,7 @@
                             <children>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="Hôte" wrappingWidth="30.2080078125">
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="Host" wrappingWidth="30.2080078125">
                                  <VBox.margin>
                                     <Insets bottom="10.0" />
                                  </VBox.margin>
@@ -66,7 +66,7 @@
                         </VBox>
                         <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0">
                            <children>
-                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="Nom d'utilisateur">
+                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="Username">
                                           <VBox.margin>
                                               <Insets bottom="10.0" />
                                           </VBox.margin>
@@ -89,7 +89,7 @@
                         </VBox>
                         <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0">
                            <children>
-                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="Mot de passe">
+                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="Password">
                                           <VBox.margin>
                                               <Insets bottom="10.0" />
                                           </VBox.margin>
@@ -121,7 +121,7 @@
                                 </HBox>
                                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#login" prefHeight="31.0" prefWidth="134.0" text="Connexion" />
+                              <Button mnemonicParsing="false" onAction="#login" prefHeight="31.0" prefWidth="134.0" text="Login" />
                            </children>
                                 </HBox>
                             </children>
