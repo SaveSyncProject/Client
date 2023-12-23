@@ -103,20 +103,21 @@ public class FileTransferController {
         showBackupSuccessPopup("Restore Successful", "The files have been successfully restored.");
     }
 
-    private void executePartialRestore() throws IOException{
+    /**
+     * Requete de restauration partielle
+     * @throws IOException
+     */
+    private void executePartialRestore() throws IOException {
+        String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
         List<String> selectedFiles = new ArrayList<>(filesListView.getSelectionModel().getSelectedItems());
-        if (!selectedFiles.isEmpty() && destinationPathField.getText() != null) {
-            String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
-            List<String> filesWithBackupPath = selectedFiles.stream()
-                    .map(file -> Paths.get(selectedBackup, file).toString())
-                    .collect(Collectors.toList());
-            sendRequest("RESTORE_PARTIAL_REQUEST", filesWithBackupPath);
+
+        if (!selectedFiles.isEmpty() && destinationPathField.getText() != null && selectedBackup != null) {
+            sendRequest("RESTORE_PARTIAL_REQUEST", selectedBackup, selectedFiles);
             receiveAndRestoreFiles(destinationPathField.getText());
             showBackupSuccessPopup("Restore Successful", "The files have been successfully restored.");
         } else {
-            showErrorPopup("Selection Required", "Please select files to restore and a destination folder.");
+            showErrorPopup("Selection Required", "Please select a backup, files to restore, and a destination folder.");
         }
-        onViewFiles();
     }
 
     private void executeFileDeletion() {
@@ -294,38 +295,5 @@ public class FileTransferController {
             showErrorPopup("Selection Required", "Please select a backup to view its files.");
         }
     }
-
-    private void receiveAndRestoreSpecificFiles(String restoreDirectory) throws IOException {
-        try {
-            Object response;
-            while ((response = in.readObject()) != null) {
-                if (response.equals("RESTORE_COMPLETE")) {
-                    break;
-                }
-
-                String serverFilePath = (String) response;
-                int backupIndex = serverFilePath.indexOf("_backup/") + "_backup/".length();
-
-                String relativeFilePath = serverFilePath.substring(backupIndex);
-
-                Path destFile = Paths.get(restoreDirectory, relativeFilePath);
-
-                Files.createDirectories(destFile.getParent());
-
-                try (OutputStream fileOut = Files.newOutputStream(destFile)) {
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-                    while ((bytesRead = in.read(buffer)) != -1) {
-                        fileOut.write(buffer, 0, bytesRead);
-                    }
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            showErrorPopup("Restore Error", "Error while receiving data from the server.");
-            e.printStackTrace();
-        }
-    }
-
-
 
 }
