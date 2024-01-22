@@ -43,7 +43,7 @@ Les fichiers sont envoyés au serveur via un socket SSL et zipés sur le serveur
 
 ### Récupération des sauvegardes
 Depuis l'interface, l'utilisateur peut récupérer les sauvegardes effectuées en cliquant sur le bouton "Démarrer la récupération".
-Il doit toutefois auparavant sélectionner le dossier de destination pour récupérer les fichiers.
-Les fichiers sont récupérés depuis le serveur via un socket SSL et dézipés dans le dossier de destination.
+Il doit toutefois auparavant sélectionner le dossier de destination et la sauvegarde à restaurer.
+Une fois ceci fait, les fichiers sont récupérés depuis le serveur via un socket SSL et restaurés dans le dossier indiqué.
 
 ![RestoreForm.png](src%2Fmain%2Fresources%2Fimage%2Fdoc%2FRestoreForm.png)
