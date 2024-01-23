@@ -3,6 +3,8 @@
 ## Description
 This module is the client part of the offsite backup application. Developed with JavaFX, this user interface allows users to select folders to backup, configure connection settings to the backup server, and initiate the backup process.
 
+![SaveSyncSchema.png](src%2Fmain%2Fresources%2Fimage%2Fdoc%2FSaveSyncSchema.png)
+
 ## Prerequisites
 - JDK 21 or higher
 - JavaFX SDK 17 or higher
@@ -16,12 +18,6 @@ git clone https://github.com/SaveSync-App/Client.git
 2. Configure JavaFX
 
 Ensure that the JavaFX SDK is installed and properly configured in your IDE or development environment.
-
-## Operations
-
-This application allows the user to backup their files on a remote server. It also allows for the retrieval of the backups made.
-
-![SaveSyncSchema.png](src%2Fmain%2Fresources%2Fimage%2Fdoc%2FSaveSyncSchema.png)
 
 ### Server Connection
 
