@@ -43,10 +43,15 @@ public class UserAuthController {
     public void login() {
         String username = this.username.getText();
         String password = this.password.getText();
-        String host = this.host.getText();
+        String hostInput = this.host.getText();
         int port = 1234;
 
         try {
+            String[] hostParts = hostInput.split(":");
+            String host = hostParts[0];
+            if (hostParts.length > 1) {
+                port = Integer.parseInt(hostParts[1]); // Utilise le port spécifié par l'utilisateur
+            }
             SSLSocket sslSocket = createSSLSocket(host, port);
             out = new ObjectOutputStream(sslSocket.getOutputStream());
             in = new ObjectInputStream(sslSocket.getInputStream());
@@ -62,6 +67,9 @@ public class UserAuthController {
                 imageAttention.setVisible(true);
                 sslSocket.close();
             }
+        } catch (NumberFormatException e) {
+            textInfo.setText("Invalid port number.");
+            imageAttention.setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
             textInfo.setText("Unable to connect to the server.");
