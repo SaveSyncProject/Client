@@ -1,49 +1,42 @@
 # SaveSync - Client
 
 ## Description
-Ce module est la partie cliente de l'application de sauvegarde externalisée. Développée avec JavaFX, cette interface utilisateur permet aux utilisateurs de sélectionner les dossiers à sauvegarder, de configurer les paramètres de connexion au serveur de sauvegarde, et d'initier le processus de sauvegarde.
+This module is the client part of the offsite backup application. Developed with JavaFX, this user interface allows users to select folders to backup, configure connection settings to the backup server, and initiate the backup process.
 
-## Prérequis
-- JDK 21 ou supérieur
-- JavaFX SDK 17 ou supérieur
+## Prerequisites
+- JDK 21 or higher
+- JavaFX SDK 17 or higher
 
 ## Installation
-1. Cloner le dépôt Git
+1. Clone the Git repository
 ```
 git clone https://github.com/SaveSync-App/Client.git
 ```
 
-2. Configurer JavaFX
+2. Configure JavaFX
 
-Assurez-vous que le SDK JavaFX est installé et correctement configuré dans votre IDE ou environnement de développement.
+Ensure that the JavaFX SDK is installed and properly configured in your IDE or development environment.
 
-## Fonctionnement
+## Operations
 
-Cette application permet à l'utilisateur de sauvegarder ses fichiers sur un serveur distant. 
-Elle permet également de récupérer les sauvegardes effectuées.
+This application allows the user to backup their files on a remote server. It also allows for the retrieval of the backups made.
 
 ![SaveSyncSchema.png](src%2Fmain%2Fresources%2Fimage%2Fdoc%2FSaveSyncSchema.png)
 
-### Connexion au serveur
+### Server Connection
 
-Lors du lancement de l'application, l'utilisateur est invité à se connecter au serveur de sauvegarde. Il doit renseigner l'adresse IP du serveur ainsi que son nom d'utilisateur et son mot de passe.
-L'objet `User` est ensuite créé et envoyé au serveur pour authentification avec un socket SSL.
-Le serveur vérifie les informations de connexion auprès de l'annuaire LDAP et accepte ou non la connexion.
+Upon launching the application, the user is prompted to connect to the backup server. They must enter the server's IP address as well as their username and password. The User object is then created and sent to the server for authentication via an SSL socket. The server verifies the login information with the LDAP directory and either accepts or rejects the connection.
 
 ![ConnectionForm.png](src%2Fmain%2Fresources%2Fimage%2Fdoc%2FConnectionForm.png)
 
-### Sélection des dossiers à sauvegarder
+### Selecting Folders to Backup
 
-Une fois connecté, l'utilisateur peut sélectionner le dossier à sauvegarder en cliquant sur le bouton dédié. 
-Un `DirectoryChooser` s'ouvre alors et permet de sélectionner un dossier.
-L'utilisateur peut ensuite démarrer la sauvegarde en cliquant sur le bouton "Démarrer la sauvegarde".
-Les fichiers sont envoyés au serveur via un socket SSL et zipés sur le serveur avec les informations concernant la sauvegarde (date et heure) dans le nom du fichier.
+Once connected, the user can select the folder to backup by clicking on the dedicated button. 
+A `DirectoryChooser` then opens, allowing the selection of a folder. The user can then start the backup by clicking on the "Start Backup" button. Files are sent to the server via an SSL socket and zipped on the server with backup information (date and time) in the file name.
 
 ![SaveForm.png](src%2Fmain%2Fresources%2Fimage%2Fdoc%2FSaveForm.png)
 
-### Récupération des sauvegardes
-Depuis l'interface, l'utilisateur peut récupérer les sauvegardes effectuées en cliquant sur le bouton "Démarrer la récupération".
-Il doit toutefois auparavant sélectionner le dossier de destination et la sauvegarde à restaurer.
-Une fois ceci fait, les fichiers sont récupérés depuis le serveur via un socket SSL et restaurés dans le dossier indiqué.
+### Backup Recovery
+From the interface, the user can retrieve the backups made by clicking on the "Start Recovery" button. However, they must first select the destination folder and the backup to restore. Once this is done, the files are retrieved from the server via an SSL socket and restored in the indicated folder.
 
 ![RestoreForm.png](src%2Fmain%2Fresources%2Fimage%2Fdoc%2FRestoreForm.png)
