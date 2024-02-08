@@ -6,12 +6,12 @@ import javafx.stage.Stage;
 
 public class ClientApplication extends Application {
 
-        @Override
-        public void start(Stage stage) throws Exception {
-            new UserAuthView();
-        }
+    @Override
+    public void start(Stage stage) throws Exception {
+        new UserAuthView();
+    }
 
-        public static void main(String[] args) {
-            launch(args);
-        }
+    public static void main(String[] args) {
+        launch(args);
+    }
 }

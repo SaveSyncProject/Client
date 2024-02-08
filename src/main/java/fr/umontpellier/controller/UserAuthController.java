@@ -29,7 +29,7 @@ public class UserAuthController {
     private Text textInfo;
 
     @FXML
-    private ImageView imageAttention;
+    private ImageView warningIcon;
 
     private Stage stage;
 
@@ -64,16 +64,16 @@ public class UserAuthController {
                 new FileBackupView(sslSocket, in, out).show();
             } else {
                 textInfo.setText("Incorrect username or password.");
-                imageAttention.setVisible(true);
+                warningIcon.setVisible(true);
                 sslSocket.close();
             }
         } catch (NumberFormatException e) {
             textInfo.setText("Invalid port number.");
-            imageAttention.setVisible(true);
+            warningIcon.setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
             textInfo.setText("Unable to connect to the server.");
-            imageAttention.setVisible(true);
+            warningIcon.setVisible(true);
         }
     }
 

@@ -9,9 +9,6 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -79,7 +76,7 @@ public class FileTransferController {
 
     private void executeBackup() {
         try {
-            out.writeObject("SAVE_REQUEST");
+            out.writeObject("CREATE_BACKUP");
             List<String> extensions = Arrays.asList(extensionField.getText().split(" "));
             Backup backup = new Backup(folderPathField.getText(), extensions);
             out.writeObject(backup);
@@ -98,7 +95,7 @@ public class FileTransferController {
         }
 
         String selectedBackup = selectedBackups.get(0);
-        sendRequest("RESTORE_ALL_REQUEST", selectedBackup);
+        sendRequest("RESTORE_BACKUP", selectedBackup);
         receiveAndRestoreFiles(restoreDirectory);
         showBackupSuccessPopup("Restore Successful", "The files have been successfully restored.");
     }
@@ -112,7 +109,7 @@ public class FileTransferController {
         List<String> selectedFiles = new ArrayList<>(filesListView.getSelectionModel().getSelectedItems());
 
         if (!selectedFiles.isEmpty() && destinationPathField.getText() != null && selectedBackup != null) {
-            sendRequest("RESTORE_PARTIAL_REQUEST", selectedBackup, selectedFiles);
+            sendRequest("RESTORE_FILE", selectedBackup, selectedFiles);
             receiveAndRestoreFiles(destinationPathField.getText());
             showBackupSuccessPopup("Restore Successful", "The files have been successfully restored.");
         } else {
@@ -127,7 +124,7 @@ public class FileTransferController {
             List<String> fullPaths = selectedFiles.stream()
                     .map(fileName -> selectedBackup + "/" + fileName)
                     .collect(Collectors.toList());
-            sendRequest("DELETE_FILES_REQUEST", fullPaths);
+            sendRequest("DELETE_FILE", fullPaths);
             handleResponse("Delete Successful", "The files have been deleted successfully.");
         }
         onViewFiles();
@@ -136,7 +133,7 @@ public class FileTransferController {
     private void executeBackupDeletion() {
         String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
         if (selectedBackup != null) {
-            sendRequest("DELETE_BACKUP_REQUEST", selectedBackup);
+            sendRequest("DELETE_BACKUP", selectedBackup);
             handleResponse("Delete Successful", "The backup has been deleted successfully.");
             onRefreshBackups();
             filesListView.getItems().clear();
@@ -252,9 +249,9 @@ public class FileTransferController {
     private void onRefreshBackups() {
         try {
             if (out != null) {
-                out.writeObject("LIST_BACKUPS_REQUEST");
+                out.writeObject("READ_BACKUP");
                 out.flush();
-
+                
                 Object response = in.readObject();
                 if (response instanceof List) {
                     List<String> backups = (List<String>) response;
@@ -274,7 +271,7 @@ public class FileTransferController {
         String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
         if (selectedBackup != null) {
             try {
-                out.writeObject("LIST_FILES_REQUEST");
+                out.writeObject("READ_FILE");
                 out.writeObject(selectedBackup);
                 out.flush();
 

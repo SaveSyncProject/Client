@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.Socket;
 
 public class UserAuthView extends Stage {
 
@@ -22,7 +21,6 @@ public class UserAuthView extends Stage {
             this.setScene(scene);
             this.sizeToScene();
             this.show();
-
         } catch (IOException e) {
             e.printStackTrace();
         }

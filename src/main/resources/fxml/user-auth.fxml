@@ -108,7 +108,7 @@
                         </VBox>
                                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                     <children>
-                                        <ImageView fx:id="imageAttention" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" style="-fx-opacity: 100;" visible="false">
+                                        <ImageView fx:id="warningIcon" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" style="-fx-opacity: 100;" visible="false">
                                             <HBox.margin>
                                                 <Insets right="5.0" />
                                             </HBox.margin>
