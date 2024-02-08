@@ -21,11 +21,9 @@ public class UserAuthView extends Stage {
             this.setScene(scene);
             this.sizeToScene();
             this.show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
 }
-
