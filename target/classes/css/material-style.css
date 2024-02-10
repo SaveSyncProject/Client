@@ -1,0 +1,74 @@
+.root {
+    -fx-font-family: 'Roboto', sans-serif;
+    -fx-base: #ffffff;
+    -fx-background: #eeeeee;
+}
+
+.button {
+    -fx-background-color: #507DBC;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    -fx-padding: 10 20;
+    -fx-transition: background-color 0.3s, transform 0.3s;
+}
+
+.button-small {
+    -fx-background-color: green;
+    -fx-padding: 5 10;
+    -fx-font-size: 10px;
+}
+
+.button-medium {
+    -fx-padding: 10 20;
+    -fx-font-size: 14px;
+}
+
+.button-large {
+    -fx-padding: 15 30;
+    -fx-font-size: 18px;
+}
+
+.button:hover {
+    -fx-background-color: #608FCF;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.button-small:hover {
+    -fx-background-color: #019c01;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.text-field {
+    -fx-pref-width: 200px;
+    -fx-pref-height: 30px;
+    -fx-font-size: 14px;
+    -fx-border-color: #507DBC;
+    -fx-border-width: 2;
+}
+
+.text-field:focused {
+    -fx-border-color: #608FCF;
+}
+
+.label {
+    -fx-pref-width: 200px;
+    -fx-pref-height: 30px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.subtitle {
+    -fx-pref-width: 200px;
+    -fx-pref-height: 30px;
+    -fx-font-size: 18px;
+    -fx-text-fill: #333333;
+}
+
+.title {
+    -fx-font-size: 24px;
+    -fx-text-fill: #019c01;
+}
