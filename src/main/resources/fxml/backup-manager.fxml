@@ -2,12 +2,14 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -142,6 +144,52 @@
                 </VBox>
             </content>
         </Tab>
+      <Tab closable="false" text="Settings">
+         <content>
+            <VBox fx:id="backupExport2" alignment="TOP_CENTER" prefHeight="478.0" prefWidth="640.0">
+               <children>
+                  <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="499.0" prefWidth="640.0">
+                     <children>
+                        <VBox alignment="CENTER" layoutX="165.0" layoutY="108.0" prefHeight="200.0" prefWidth="310.0" spacing="30.0">
+                           <children>
+                              <VBox alignment="CENTER" prefHeight="75.0" prefWidth="274.0" spacing="5.0">
+                                 <children>
+                                    <Label alignment="CENTER" text="Folder to Backup">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="autoBackupDirectoryField" editable="false" onAction="#onAutoExportSelectFolder" prefHeight="26.0" prefWidth="166.0" />
+                                    <Button fx:id="autoExportBrowseButton" mnemonicParsing="false" onAction="#onAutoExportSelectFolder" prefHeight="26.0" prefWidth="136.0" styleClass="button, button-small" text="Browse..." />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="75.0" prefWidth="274.0" spacing="5.0">
+                                 <children>
+                                    <Label alignment="CENTER" text="Backup Interval">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="autoBackupIntervalField" prefHeight="26.0" prefWidth="166.0" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="75.0" prefWidth="274.0" spacing="5.0">
+                                 <children>
+                                    <CheckBox fx:id="runInBackgroundCheckbox" mnemonicParsing="false" onAction="#handleRunInBackgroundAction" text="Run in Background" />
+                                 </children>
+                              </VBox>
+                              <ToggleButton fx:id="autoBackupToggleButton" mnemonicParsing="false" onAction="#onToggleAutoBackup" text="Enable Automatic Backup" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </AnchorPane>
+               </children>
+            </VBox>
+         </content>
+      </Tab>
 
 
     </tabs>

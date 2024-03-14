@@ -55,7 +55,7 @@
                                           <Image url="@../image/host.png" />
                                        </image>
                                     </ImageView>
-                                    <TextField fx:id="host" prefWidth="204.0" promptText="192.168.1.101:1234">
+                                    <TextField fx:id="hostnameField" prefWidth="204.0" promptText="192.168.1.101:1234">
                                        <cursor>
                                           <Cursor fx:constant="TEXT" />
                                        </cursor>
@@ -78,7 +78,7 @@
                                           <Image url="@../image/user.png" />
                                        </image>
                                     </ImageView>
-                                            <TextField fx:id="username" prefWidth="204.0">
+                                            <TextField fx:id="usernameField" prefWidth="204.0">
                                                 <cursor>
                                                     <Cursor fx:constant="TEXT" />
                                                 </cursor>
@@ -101,7 +101,7 @@
                                           <Image url="@../image/lock.png" />
                                        </image>
                                     </ImageView>
-                                            <PasswordField fx:id="password" prefHeight="26.0" prefWidth="203.0" />
+                                            <PasswordField fx:id="passwordField" prefHeight="26.0" prefWidth="203.0" />
                                  </children>
                               </HBox>
                            </children>
@@ -116,7 +116,7 @@
                                                 <Image url="@../image/error.png" />
                                             </image>
                                         </ImageView>
-                                        <Text id="messageErreur" fx:id="textInfo" fill="#d10000" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" />
+                                        <Text id="messageErreur" fx:id="infoLabel" fill="#d10000" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" />
                                     </children>
                                 </HBox>
                                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">

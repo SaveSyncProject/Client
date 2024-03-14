@@ -17,4 +17,8 @@ module fr.umontpellier.client {
 
     exports fr.umontpellier;
     opens fr.umontpellier;
+    exports fr.umontpellier.util;
+    opens fr.umontpellier.util;
+    exports fr.umontpellier.service;
+    opens fr.umontpellier.service;
 }

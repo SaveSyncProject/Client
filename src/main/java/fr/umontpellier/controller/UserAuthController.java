@@ -23,16 +23,15 @@ import java.security.KeyManagementException;
 public class UserAuthController {
 
     @FXML
-    private TextField username, password, host;
+    private TextField usernameField, passwordField, hostnameField;
 
     @FXML
-    private Text textInfo;
+    private Text infoLabel;
 
     @FXML
     private ImageView warningIcon;
 
     private Stage stage;
-
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
@@ -41,16 +40,16 @@ public class UserAuthController {
     }
 
     public void login() {
-        String username = this.username.getText();
-        String password = this.password.getText();
-        String hostInput = this.host.getText();
+        String username = this.usernameField.getText();
+        String password = this.passwordField.getText();
+        String hostInput = this.hostnameField.getText();
         int port = 1234;
 
         try {
             String[] hostParts = hostInput.split(":");
             String host = hostParts[0];
             if (hostParts.length > 1) {
-                port = Integer.parseInt(hostParts[1]); // Utilise le port spécifié par l'utilisateur
+                port = Integer.parseInt(hostParts[1]);
             }
             SSLSocket sslSocket = createSSLSocket(host, port);
             out = new ObjectOutputStream(sslSocket.getOutputStream());
@@ -63,16 +62,16 @@ public class UserAuthController {
                 stage.close();
                 new FileBackupView(sslSocket, in, out).show();
             } else {
-                textInfo.setText("Incorrect username or password.");
+                infoLabel.setText("Incorrect username or password.");
                 warningIcon.setVisible(true);
                 sslSocket.close();
             }
         } catch (NumberFormatException e) {
-            textInfo.setText("Invalid port number.");
+            infoLabel.setText("Invalid port number.");
             warningIcon.setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
-            textInfo.setText("Unable to connect to the server.");
+            infoLabel.setText("Unable to connect to the server.");
             warningIcon.setVisible(true);
         }
     }
