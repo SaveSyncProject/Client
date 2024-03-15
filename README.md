@@ -3,7 +3,7 @@
 ## Description
 This module is the client part of the offsite backup application. Developed with JavaFX, this user interface allows users to select folders to backup, configure connection settings to the backup server, and initiate the backup process. The client is built using Java for its portability across operating systems and support for polymorphism, enhancing scalability and maintenance of the code.
 
-![SaveSyncSchema.png](src%2Fmain%2Fresources%2Fimage%2Fdoc%2FSaveSyncSchema.png)
+<img src="src/main/resources/image/doc/SaveSyncSchema.png" width="600">
 
 ## Technical Description
 
@@ -16,44 +16,63 @@ The client application allows users to:
 - Select and backup folders on the server.
 - Retrieve previous backups.
 - Manage backup versions with advanced features.
+- Automatic Backups : Users can configure the application to automatically backup selected folders at regular intervals.
+  This ensures that your data is regularly backed up without the need for manual intervention.
 
 ## Quick Start
 
-### Environment Setup
-- Ensure Java is installed on your system and the JAVA_HOME environment variable is set to point to OpenJDK 21.
-- Install Docker, if not already done, and start the Docker service on your machine.
-
 ### Installation
 
-1. Clone the Git repository
+#### Prerequisites
+
+- **Java Development Kit (JDK):** This program requires Java JDK 21. Ensure Java is installed on your system and that the JAVA_HOME environment variable points to your JDK 21 installation.
+
+- **Docker:** Docker is necessary for running the LDAP service for authentication. If not already installed, download and start the Docker service on your machine.
+
+#### Clone the Git repository
 ```
 git clone https://github.com/SaveSync-App/Client.git
 ```
 
-2. Configure JavaFX
-
-Ensure that the JavaFX SDK is installed and properly configured in your IDE or development environment.
-
-### Launching the Client Application
+#### Launching the Client Application
 
 Open your IDE and launch the client application or use the .jar file to start the SaveSync client graphical interface.
 
-### Server Connection
+#### Server Connection
 
-- Upon launching the application, the user is prompted to connect to the backup server. They must enter the server's IP address as well as their username and password. 
-The User object is then created and sent to the server for authentication via an SSL socket.
-- The server verifies the login information with the LDAP directory and either accepts or rejects the connection.
+Upon application launch, users are prompted to connect to the backup server by entering the server's IP address, username, and password. Authentication is performed via an SSL socket, with the server validating credentials against the LDAP directory.
 
-![ConnectionForm.png](src%2Fmain%2Fresources%2Fimage%2Fdoc%2FConnectionForm.png)
+To quickly launch the server for testing SaveSync, follow these steps:
 
-### Selecting Folders to Backup
+1. **Clone the Server Repository:** Obtain the server code by cloning its repository.
+    ```
+    git clone https://github.com/SaveSync-App/Server.git
+    ```
 
-- Once connected, the user can select the folder to backup by clicking on the dedicated button. 
-- A `DirectoryChooser` then opens, allowing the selection of a folder. The user can then start the backup by clicking on the "Start Backup" button. Files are sent to the server via an SSL socket and stored on the server with backup information (date and time) in the file name.
+2. **Launch with Docker Compose:** Navigate to the root of the cloned server project and run:
+    ```   
+    docker-compose up -d
+    ```
 
-![SaveForm.png](src%2Fmain%2Fresources%2Fimage%2Fdoc%2FSaveForm.png)
+3. **Run the Server Application:** Start the server application to listen for client connections.
 
-### Backup Recovery
-- From the interface, the user can retrieve the backups made by clicking on the "Start Recovery" button. However, they must first select the destination folder and the backup to restore. Once this is done, the files are retrieved from the server via an SSL socket and restored in the indicated folder.
+<img src="src/main/resources/image/doc/ConnectionForm.png" width="600">
 
-![RestoreForm.png](src%2Fmain%2Fresources%2Fimage%2Fdoc%2FRestoreForm.png)
+
+#### Selecting Folders to Backup
+
+Users select folders for backup through a `DirectoryChooser`. Once a folder is selected, initiating the backup process sends files to the server via an SSL socket, with backups tagged with date and time information.
+
+<img src="src/main/resources/image/doc/SaveForm.png" width="600">
+
+
+#### Backup Recovery
+The "Start Recovery" button allows users to retrieve backups. Users choose a destination folder and a specific backup for recovery, with the option to restore the entire backup or select individual files. This flexible recovery process, secured via an SSL socket, ensures precise and tailored restoration.
+
+<img src="src/main/resources/image/doc/RestoreForm.png" width="600">
+
+#### Automatic Backups Setup 
+
+Users can set the application to perform automatic backups of selected folders at predetermined intervals, ensuring regular data protection without manual intervention. Additionally, selecting "Run in Background" minimizes the application to the system tray for uninterrupted operation, allowing scheduled backups to continue even when the main window is closed.
+
+<img src="src/main/resources/image/doc/SettingsForm.png" width="600">
