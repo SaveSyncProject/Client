@@ -26,7 +26,6 @@ public class FileBackupView extends Stage {
             this.setScene(scene);
             this.sizeToScene();
             this.show();
-
         } catch (IOException e) {
             e.printStackTrace();
         }

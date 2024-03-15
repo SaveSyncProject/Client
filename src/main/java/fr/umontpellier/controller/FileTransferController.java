@@ -1,49 +1,97 @@
 package fr.umontpellier.controller;
 
 import fr.umontpellier.model.Backup;
+import fr.umontpellier.service.AlertNotificationService;
+import fr.umontpellier.service.UserNotificationService;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static fr.umontpellier.util.SystemTrayUtil.addToSystemTray;
 
 public class FileTransferController {
 
     @FXML
-    Button exportBrowseButton, exportButton, importButton, importBrowseButton;
+    Button exportBrowseButton, exportButton, importButton, importBrowseButton, autoExportBrowseButton;
     @FXML
-    TextField folderPathField, extensionField, destinationPathField;
+    TextField folderPathField, extensionField, destinationPathField, autoBackupDirectoryField, autoBackupIntervalField;
+    @FXML
+    CheckBox runInBackgroundCheckbox;
+    @FXML
+    ToggleButton autoBackupToggleButton;
     @FXML
     private ListView<String> backupListView;
     @FXML
     private ListView<String> filesListView;
-    @FXML
-    private VBox fileContainer;
 
+    private final UserNotificationService notificationService;
+    private final ExecutorService executor = Executors.newCachedThreadPool();
     private Stage stage;
     private Socket socket;
+    private ScheduledExecutorService scheduler;
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    private boolean addedToTray = false;
+
+    public FileTransferController() {
+        this.notificationService = new AlertNotificationService();
+    }
 
     public void setStage(Stage stage) {
         this.stage = stage;
+
+        updateCloseBehavior(runInBackgroundCheckbox.isSelected());
+
+        runInBackgroundCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateCloseBehavior(newValue));
+    }
+
+    private void updateCloseBehavior(boolean runInBackground) {
+        stage.setOnCloseRequest(event -> {
+            if (runInBackground) {
+                stage.hide();
+                event.consume();
+                if (!addedToTray) {
+                    Platform.runLater(() -> addToSystemTray(stage));
+                    addedToTray = true;
+                }
+            } else {
+                shutdownApplication();
+            }
+        });
+    }
+
+    private void shutdownApplication() {
+        if (scheduler != null && !scheduler.isShutdown()) {
+            scheduler.shutdownNow();
+        }
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Platform.exit();
+        System.exit(0);
     }
 
     @FXML
     public void initialize() {
         filesListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         backupListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
         backupListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 onViewFiles();
@@ -52,9 +100,85 @@ public class FileTransferController {
     }
 
     @FXML
+    private void handleRunInBackgroundAction() {
+        boolean runInBackground = runInBackgroundCheckbox.isSelected();
+        updateCloseBehavior(runInBackground);
+    }
+
+    @FXML
     public void onExport() {
-        executeBackup();
+        boolean success = executeBackup(folderPathField.getText());
+        if (success) {
+            notificationService.showSuccessPopup("Backup Successful", "The files have been backed up successfully.");
+        } else {
+            notificationService.showErrorPopup("Backup Error", "An error occurred during the backup.");
+        }
         onRefreshBackups();
+    }
+
+    @FXML
+    private void onViewFiles() {
+        String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
+        if (selectedBackup != null) {
+            try {
+                out.writeObject("READ_FILE");
+                out.writeObject(selectedBackup);
+                out.flush();
+
+                Object response = in.readObject();
+                if (response instanceof List) {
+                    List<String> files = (List<String>) response;
+                    filesListView.getItems().setAll(files);
+                }
+                else{
+
+                    filesListView.getItems().clear();
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+                notificationService.showErrorPopup("Connection Error", "Error while communicating with the server.");
+            }
+        } else {
+            notificationService.showErrorPopup("Selection Required", "Please select a backup to view its files.");
+        }
+    }
+
+    @FXML
+    private void onRefreshBackups() {
+        try {
+            if (out != null) {
+                out.writeObject("READ_BACKUP");
+                out.flush();
+
+                Object response = in.readObject();
+                if (response instanceof List) {
+                    List<String> backups = (List<String>) response;
+                    backupListView.getItems().setAll(backups);
+                }
+            } else {
+                notificationService.showErrorPopup("Connection Error", "Error while communicating with the server.");
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            notificationService.showErrorPopup("Connection Error", "Error while communicating with the server.");
+        }
+    }
+
+    @FXML
+    public void onToggleAutoBackup() {
+        if (autoBackupToggleButton.isSelected()) {
+            boolean started = startAutomaticBackup();
+            if (!started) {
+                autoBackupToggleButton.setSelected(false);
+            } else {
+                autoBackupToggleButton.setText("Disable Automatic Backup");
+            }
+        } else {
+            if (scheduler != null && !scheduler.isShutdown()) {
+                scheduler.shutdown();
+            }
+            autoBackupToggleButton.setText("Enable Automatic Backup");
+        }
     }
 
     @FXML
@@ -77,46 +201,42 @@ public class FileTransferController {
         executeBackupDeletion();
     }
 
-    private void executeBackup() {
+    private boolean executeBackup(String folderPath) {
         try {
-            out.writeObject("SAVE_REQUEST");
+            out.writeObject("CREATE_BACKUP");
             List<String> extensions = Arrays.asList(extensionField.getText().split(" "));
-            Backup backup = new Backup(folderPathField.getText(), extensions);
+            Backup backup = new Backup(folderPath, extensions);
             out.writeObject(backup);
-            showBackupSuccessPopup("Backup Successful", "The files have been backed up successfully.");
+            return true;
         } catch (IOException e) {
-            showErrorPopup("Backup Error", "An error occurred during the backup.");
             e.printStackTrace();
+            return false;
         }
     }
 
     private void executeFullRestore(String restoreDirectory) throws IOException {
         List<String> selectedBackups = new ArrayList<>(backupListView.getSelectionModel().getSelectedItems());
         if(selectedBackups.isEmpty() || restoreDirectory == null){
-            showErrorPopup("Selection Required", "Please select a backup to restore and a destination folder.");
+            notificationService.showErrorPopup("Selection Required", "Please select a backup to restore and a destination folder.");
             return;
         }
 
         String selectedBackup = selectedBackups.get(0);
-        sendRequest("RESTORE_ALL_REQUEST", selectedBackup);
+        sendRequest("RESTORE_BACKUP", selectedBackup);
         receiveAndRestoreFiles(restoreDirectory);
-        showBackupSuccessPopup("Restore Successful", "The files have been successfully restored.");
+        notificationService.showSuccessPopup("Restore Successful", "The files have been successfully restored.");
     }
 
-    /**
-     * Requete de restauration partielle
-     * @throws IOException
-     */
     private void executePartialRestore() throws IOException {
         String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
         List<String> selectedFiles = new ArrayList<>(filesListView.getSelectionModel().getSelectedItems());
 
         if (!selectedFiles.isEmpty() && destinationPathField.getText() != null && selectedBackup != null) {
-            sendRequest("RESTORE_PARTIAL_REQUEST", selectedBackup, selectedFiles);
+            sendRequest("RESTORE_FILE", selectedBackup, selectedFiles);
             receiveAndRestoreFiles(destinationPathField.getText());
-            showBackupSuccessPopup("Restore Successful", "The files have been successfully restored.");
+            notificationService.showSuccessPopup("Restore Successful", "The files have been successfully restored.");
         } else {
-            showErrorPopup("Selection Required", "Please select a backup, files to restore, and a destination folder.");
+            notificationService.showErrorPopup("Selection Required", "Please select a backup, files to restore, and a destination folder.");
         }
     }
 
@@ -127,7 +247,7 @@ public class FileTransferController {
             List<String> fullPaths = selectedFiles.stream()
                     .map(fileName -> selectedBackup + "/" + fileName)
                     .collect(Collectors.toList());
-            sendRequest("DELETE_FILES_REQUEST", fullPaths);
+            sendRequest("DELETE_FILE", fullPaths);
             handleResponse("Delete Successful", "The files have been deleted successfully.");
         }
         onViewFiles();
@@ -136,38 +256,40 @@ public class FileTransferController {
     private void executeBackupDeletion() {
         String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
         if (selectedBackup != null) {
-            sendRequest("DELETE_BACKUP_REQUEST", selectedBackup);
+            sendRequest("DELETE_BACKUP", selectedBackup);
             handleResponse("Delete Successful", "The backup has been deleted successfully.");
             onRefreshBackups();
             filesListView.getItems().clear();
         } else {
-            showErrorPopup("Selection Required", "Please select a backup to delete.");
+            notificationService.showErrorPopup("Selection Required", "Please select a backup to delete.");
         }
     }
 
     private void sendRequest(String requestType, Object... params) {
-        try {
-            out.writeObject(requestType);
-            for (Object param : params) {
-                out.writeObject(param);
+        executor.submit(() -> {
+            try {
+                out.writeObject(requestType);
+                for (Object param : params) {
+                    out.writeObject(param);
+                }
+                out.flush();
+            } catch (IOException e) {
+                Platform.runLater(() -> notificationService.showErrorPopup("Connection Error", "Error while communicating with the server."));
+                e.printStackTrace();
             }
-            out.flush();
-        } catch (IOException e) {
-            showErrorPopup("Connection Error", "Error while communicating with the server.");
-            e.printStackTrace();
-        }
+        });
     }
 
     private void handleResponse(String successMessage, String errorMessage) {
         try {
             String response = (String) in.readObject();
             if ("SUCCESS".equals(response)) {
-                showBackupSuccessPopup(successMessage, errorMessage);
+                notificationService.showSuccessPopup(successMessage, errorMessage);
             } else {
-                showErrorPopup("Error", errorMessage);
+                notificationService.showErrorPopup("Error", errorMessage);
             }
         } catch (IOException | ClassNotFoundException e) {
-            showErrorPopup("Error", errorMessage);
+            notificationService.showErrorPopup("Error", errorMessage);
             e.printStackTrace();
         }
     }
@@ -196,25 +318,9 @@ public class FileTransferController {
             }
 
         } catch (ClassNotFoundException e) {
-            showErrorPopup("Restore Error", "Error while receiving data from the server.");
+            notificationService.showErrorPopup("Restore Error", "Error while receiving data from the server.");
             e.printStackTrace();
         }
-    }
-
-    private void showErrorPopup(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
-    private void showBackupSuccessPopup(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
     }
 
     public void onImportSelectFolder() {
@@ -224,7 +330,6 @@ public class FileTransferController {
         if (selectedDirectory != null) {
             destinationPathField.setText(selectedDirectory.getAbsolutePath());
         }
-
     }
 
     public void onExportSelectFolder() {
@@ -233,6 +338,15 @@ public class FileTransferController {
         File selectedDirectory = directoryChooser.showDialog(exportBrowseButton.getScene().getWindow());
         if (selectedDirectory != null) {
             folderPathField.setText(selectedDirectory.getAbsolutePath());
+        }
+    }
+
+    public void onAutoExportSelectFolder() {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Select a Folder");
+        File selectedDirectory = directoryChooser.showDialog(autoExportBrowseButton.getScene().getWindow());
+        if (selectedDirectory != null) {
+            autoBackupDirectoryField.setText(selectedDirectory.getAbsolutePath());
         }
     }
 
@@ -248,52 +362,37 @@ public class FileTransferController {
         this.in = in;
     }
 
-    @FXML
-    private void onRefreshBackups() {
+    private boolean startAutomaticBackup() {
+        if (autoBackupDirectoryField.getText().isEmpty()) {
+            notificationService.showErrorPopup("Backup Folder Error", "Please specify a folder to backup.");
+            return false;
+        }
+
+        int intervalMinutes;
         try {
-            if (out != null) {
-                out.writeObject("LIST_BACKUPS_REQUEST");
-                out.flush();
-
-                Object response = in.readObject();
-                if (response instanceof List) {
-                    List<String> backups = (List<String>) response;
-                    backupListView.getItems().setAll(backups);
-                }
-            } else {
-                showErrorPopup("Connection Error", "Error while communicating with the server.");
+            intervalMinutes = Integer.parseInt(autoBackupIntervalField.getText());
+            if (intervalMinutes <= 0) {
+                throw new NumberFormatException("Interval must be positive.");
             }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            showErrorPopup("Connection Error", "Error while communicating with the server.");
+        } catch (NumberFormatException e) {
+            notificationService.showErrorPopup("Backup Interval Error", "The backup interval is not a valid number.");
+            return false;
         }
-    }
 
-    @FXML
-    private void onViewFiles() {
-        String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
-        if (selectedBackup != null) {
+        if (scheduler != null && !scheduler.isShutdown()) {
+            scheduler.shutdownNow();
+        }
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        Runnable backupTask = () -> {
             try {
-                out.writeObject("LIST_FILES_REQUEST");
-                out.writeObject(selectedBackup);
-                out.flush();
-
-                Object response = in.readObject();
-                if (response instanceof List) {
-                    List<String> files = (List<String>) response;
-                    filesListView.getItems().setAll(files);
-                }
-                else{
-
-                    filesListView.getItems().clear();
-                }
-            } catch (IOException | ClassNotFoundException e) {
+                executeBackup(autoBackupDirectoryField.getText());
+            } catch (Exception e) {
                 e.printStackTrace();
-                showErrorPopup("Connection Error", "Error while communicating with the server.");
             }
-        } else {
-            showErrorPopup("Selection Required", "Please select a backup to view its files.");
-        }
+        };
+
+        scheduler.scheduleAtFixedRate(backupTask, 0, intervalMinutes, TimeUnit.MINUTES);
+        return true;
     }
 
 }

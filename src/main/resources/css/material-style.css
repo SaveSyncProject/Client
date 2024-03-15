@@ -4,6 +4,35 @@
     -fx-background: #eeeeee;
 }
 
+.toggle-button {
+    -fx-background-color: #507DBC;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 5, 4, 3;
+    -fx-padding: 10 20;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+}
+
+.toggle-button:selected {
+    -fx-background-color: #D9534F;
+}
+
+.toggle-button:hover {
+    -fx-background-color: #608FCF;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.toggle-button:selected:hover {
+    -fx-background-color: #E06555;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+
 .button {
     -fx-background-color: #507DBC;
     -fx-text-fill: white;
