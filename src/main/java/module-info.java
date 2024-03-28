@@ -5,6 +5,10 @@ module fr.umontpellier.client {
     requires javafx.base;
     requires java.desktop;
     requires unboundid.ldapsdk;
+    requires org.apache.httpcomponents.core5.httpcore5;
+    requires org.apache.httpcomponents.client5.httpclient5;
+    requires com.fasterxml.jackson.databind;
+    requires java.net.http;
 
     exports fr.umontpellier.model;
     opens fr.umontpellier.model;

@@ -1,6 +1,9 @@
 package fr.umontpellier.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import fr.umontpellier.model.Backup;
+import fr.umontpellier.model.FileInfo;
 import fr.umontpellier.service.AlertNotificationService;
 import fr.umontpellier.service.UserNotificationService;
 import javafx.application.Platform;
@@ -9,16 +12,41 @@ import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.mime.FileBody;
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.*;
 import java.net.Socket;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
 import static fr.umontpellier.util.SystemTrayUtil.addToSystemTray;
 
@@ -106,7 +134,7 @@ public class FileTransferController {
     }
 
     @FXML
-    public void onExport() {
+    public void onExport() throws IOException {
         boolean success = executeBackup(folderPathField.getText());
         if (success) {
             notificationService.showSuccessPopup("Backup Successful", "The files have been backed up successfully.");
@@ -118,51 +146,69 @@ public class FileTransferController {
 
     @FXML
     private void onViewFiles() {
-        String selectedBackup = backupListView.getSelectionModel().getSelectedItem();
-        if (selectedBackup != null) {
-            try {
-                out.writeObject("READ_FILE");
-                out.writeObject(selectedBackup);
-                out.flush();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/savesync/files"))
+                .GET()
+                .build();
 
-                Object response = in.readObject();
-                if (response instanceof List) {
-                    List<String> files = (List<String>) response;
-                    filesListView.getItems().setAll(files);
-                }
-                else{
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .thenAccept(body -> {
+                    List<String> files = parseFileList(body); // Vous devez implémenter cette méthode
+                    Platform.runLater(() -> filesListView.getItems().setAll(files));
+                })
+                .exceptionally(e -> {
+                    Platform.runLater(() -> notificationService.showErrorPopup("Connection Error", "Error while communicating with the server."));
+                    return null;
+                });
+    }
 
-                    filesListView.getItems().clear();
-                }
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-                notificationService.showErrorPopup("Connection Error", "Error while communicating with the server.");
-            }
-        } else {
-            notificationService.showErrorPopup("Selection Required", "Please select a backup to view its files.");
+    private List<String> parseFileList(String jsonBody) {
+        // Utilisez votre bibliothèque JSON préférée (par exemple, Jackson ou Gson) pour parser le JSON et extraire les noms de fichier.
+        // Cet exemple suppose que vous recevez un JSON array de FileInfo objets.
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            List<FileInfo> fileInfos = mapper.readValue(jsonBody, new TypeReference<List<FileInfo>>(){});
+            return fileInfos.stream().map(FileInfo::getFileName).collect(Collectors.toList());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
         }
     }
 
     @FXML
     private void onRefreshBackups() {
-        try {
-            if (out != null) {
-                out.writeObject("READ_BACKUP");
-                out.flush();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/savesync/backups"))
+                .GET()
+                .build();
 
-                Object response = in.readObject();
-                if (response instanceof List) {
-                    List<String> backups = (List<String>) response;
-                    backupListView.getItems().setAll(backups);
-                }
-            } else {
-                notificationService.showErrorPopup("Connection Error", "Error while communicating with the server.");
-            }
-        } catch (IOException | ClassNotFoundException e) {
+        client.sendAsync(request, BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .thenAccept(body -> {
+                    List<String> backups = parseBackupList(body);
+                    Platform.runLater(() -> backupListView.getItems().setAll(backups));
+                })
+                .exceptionally(e -> {
+                    Platform.runLater(() -> notificationService.showErrorPopup("Connection Error", "Error while communicating with the server."));
+                    return null;
+                });
+    }
+
+    private List<String> parseBackupList(String jsonBody) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            // Assumer que le serveur renvoie une simple liste de chaînes (les identifiants de sauvegarde)
+            return mapper.readValue(jsonBody, new TypeReference<List<String>>(){});
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
-            notificationService.showErrorPopup("Connection Error", "Error while communicating with the server.");
+            Platform.runLater(() -> notificationService.showErrorPopup("Parsing Error", "Error parsing the backup list."));
+            return Collections.emptyList();
         }
     }
+
 
     @FXML
     public void onToggleAutoBackup() {
@@ -201,17 +247,39 @@ public class FileTransferController {
         executeBackupDeletion();
     }
 
-    private boolean executeBackup(String folderPath) {
-        try {
-            out.writeObject("CREATE_BACKUP");
-            List<String> extensions = Arrays.asList(extensionField.getText().split(" "));
-            Backup backup = new Backup(folderPath, extensions);
-            out.writeObject(backup);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+    private boolean executeBackup(String folderPath) throws IOException {
+        Path directoryPath = new File(folderPath).toPath();
+        File dir = directoryPath.toFile();
+        if (!dir.isDirectory()) {
+            throw new IllegalArgumentException("Le chemin fourni doit être un dossier.");
         }
+
+        List<String> paths = new ArrayList<>();
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost uploadFile = new HttpPost("http://localhost:8080/api/savesync/upload");
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+
+        Files.walk(directoryPath)
+                .filter(Files::isRegularFile)
+                .forEach(path -> {
+                    File file = path.toFile();
+                    String relativePath = directoryPath.relativize(path).toString();
+                    paths.add(relativePath);
+                    builder.addPart("files", new FileBody(file));
+                });
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String pathsJson = objectMapper.writeValueAsString(paths);
+
+        builder.addTextBody("paths", pathsJson, ContentType.APPLICATION_JSON);
+
+        HttpEntity multipart = builder.build();
+        uploadFile.setEntity(multipart);
+        try (CloseableHttpClient ignored = httpClient) {
+            httpClient.execute(uploadFile);
+        }
+
+        return true;
     }
 
     private void executeFullRestore(String restoreDirectory) throws IOException {

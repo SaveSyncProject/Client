@@ -60,7 +60,7 @@ public class UserAuthController {
             String response = (String) in.readObject();
             if ("OK".equals(response)) {
                 stage.close();
-                new FileBackupView(sslSocket, in, out).show();
+                new FileBackupView(stage).show();
             } else {
                 infoLabel.setText("Incorrect username or password.");
                 warningIcon.setVisible(true);
